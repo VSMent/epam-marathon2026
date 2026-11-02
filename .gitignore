@@ -1,0 +1,64 @@
+# IDE / Editor
+.idea/
+.vscode/
+*.iml
+*.code-workspace
+.claude/
+
+# OS generated files
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Node / Angular Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.angular/
+**/.angular/
+frontend/restaurant-frontend-app/src/environments/environment.production.ts
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python & AWS Syndicate
+syndicate_venv/
+**/syndicate_venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+**/.syndicate-config-*/bundles/
+**/.syndicate-config-*/logs/
+**/.syndicate-config-*/.syndicate
+*.log
+
+# .NET / C# (Backend and AQA)
+[Bb]in/
+**/[Bb]in/
+[Oo]bj/
+**/[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+*.rsuser
+
+# Local env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
