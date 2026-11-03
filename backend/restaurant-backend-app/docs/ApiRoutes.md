@@ -1180,6 +1180,12 @@ Response: 200 OK
 ```
 
 ### `POST` /group-reservations/{groupReservationId}/submit
+Request body:
+```json
+{
+  "reservationId": "string"
+}
+```
 Response: 200 OK
 ```json
 {

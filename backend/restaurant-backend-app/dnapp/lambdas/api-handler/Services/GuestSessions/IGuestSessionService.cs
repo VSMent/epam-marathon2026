@@ -15,6 +15,8 @@ public interface IGuestSessionService
     Task<GuestMenuResponse> GetGuestMenuAsync(string guestSessionId);
     Task<GetAllSessionsResponse> DeleteGuestSessionAsync(string userId, string groupReservationId, string guestSessionId);
     Task<GetAllSessionsResponse> GetAllSessionsAsync(string userId, string groupReservationId);
+    Task<string> GetOwnerGuestSessionIdAsync(string userId, string reservationId);
+    Task SubmitGroupPreOrderAsync(string userId, string groupReservationId, string? reservationId, Amazon.Lambda.Core.ILambdaLogger logger);
     Task<GetGuestSessionResponse> GetGuestSessionInfoAsync(string guestSessionId);
 }
 
