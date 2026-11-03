@@ -8,11 +8,11 @@ This repository uses a structured multi-agent coordination protocol. Any AI assi
 
 | Role | Definition Path | Scope / Working Directory | Core Stack |
 | :--- | :--- | :--- | :--- |
-| **0. Orchestrator** | `.agents/roles/orchestrator.md` | Workspace Root | Dependency graph, handoff verification, phase gating |
-| **1. Cloud & API Architect** | `.agents/roles/infra-syndicate-agent.md` | `infra/terraform/`, `backend/.../deployment_resources.json` | Terraform, AWS Syndicate, DynamoDB, API Gateway |
-| **2. Backend Engineer** | `.agents/roles/backend-dev-agent.md` | `backend/restaurant-backend-app/` | .NET 8 (C#) Lambdas, xUnit/NUnit, Syndicate Handlers |
-| **3. Frontend Engineer** | `.agents/roles/frontend-dev-agent.md` | `frontend/` | Angular 18+, TypeScript, Angular Signals, Jasmine/Karma |
-| **4. QA & Reviewer** | `.agents/roles/qa-review-agent.md` | `aqa/`, CI/CD, Git Diffs | Reqnroll (C# BDD), ESLint, dotnet test, Code Review |
+| **0. Orchestrator** | `.agents/agents/orchestrator.md` | Workspace Root | Dependency graph, handoff verification, phase gating |
+| **1. Cloud & API Architect** | `.agents/agents/infra-syndicate-agent.md` | `infra/terraform/`, `backend/.../deployment_resources.json` | Terraform, AWS Syndicate, DynamoDB, API Gateway |
+| **2. Backend Engineer** | `.agents/agents/backend-dev-agent.md` | `backend/restaurant-backend-app/` | .NET 8 (C#) Lambdas, xUnit/NUnit, Syndicate Handlers |
+| **3. Frontend Engineer** | `.agents/agents/frontend-dev-agent.md` | `frontend/` | Angular 18+, TypeScript, Angular Signals, Jasmine/Karma |
+| **4. QA & Reviewer** | `.agents/agents/qa-review-agent.md` | `aqa/`, CI/CD, Git Diffs | Reqnroll (C# BDD), ESLint, dotnet test, Code Review |
 
 ---
 
