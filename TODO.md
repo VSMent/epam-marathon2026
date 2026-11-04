@@ -1,4 +1,4 @@
-📌 Домашнє завдання до воркшопу по Backend (.NET) #5
+## ✅📌 Домашнє завдання до воркшопу по Backend (.NET) #5
 
 🎯 Груповий pre-order: функціонал для Owner
 Оберіть рівень складності. Можна виконати кілька.
@@ -20,7 +20,7 @@ DELETE guest session із групи, у відповіді оновлений �
 
 
 
-📌 Домашнє завдання по Frontend ) #6
+## 🟩📌 Домашнє завдання по Frontend ) #6
 
 🎯 Екран Owner групового pre-order
 Owner бачить, що обрав кожен гість, і відправляє в ресторан одне спільне замовлення.
@@ -56,7 +56,7 @@ npm start
 
 
 
-📌 Домашнє завдання по Manual QA #7
+## 🟩📌 Домашнє завдання по Manual QA #7
 
 🎯 Аналіз вимог і тестування User Story
 Ваше завдання: проаналізувати вимоги, покрити їх тест кейсами та протестувати функціонал.
@@ -74,7 +74,7 @@ User story: посилання
 
 
 
-📌 Домашнє завдання по Test Automation #8
+## 🟩📌 Домашнє завдання по Test Automation #8
 
 🎯 Автоматизація end-to-end сценаріїв
 Оберіть рівень, який вам підходить. Можна виконати кілька. Напрям залежить від того, що ви розгорнули в попередніх ДЗ. Деталі - у файлі до посту.
@@ -94,7 +94,7 @@ User story: посилання
 
 
 
-FROM HOMEWORK 1
+## 🟩FROM HOMEWORK 1
 US1: As a booking organizer, I want to see identical items aggregated across all guests' pre-orders on a single summary screen, So that I can replace individual portions with larger sharing options or bulk sizes to save money.
     AC1: Given multiple guests have selected identical individual items (e.g. three 300 ml cups of tea), When the organizer views the group order summary screen, Then the system displays an upsell/bulk suggestion (e.g. "Combine into 1L teapot") along with the potential cost difference.
     AC2: Given a bulk suggestion is shown, When the organizer confirms the replacement, Then the summary updates the consolidated items and recalculates the total order price automatically.

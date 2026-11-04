@@ -1,0 +1,275 @@
+{
+  "_metadata": {
+    "description": "Initial seed dataset for EPAM Restaurant application DynamoDB tables (HW1, HW5, HW6, HW8).",
+    "region": "us-west-2",
+    "ownerUserEmail": "demo_owner@test.com",
+    "ownerUserId": "a891d3a0-1071-7033-1d6a-efbd411555f2"
+  },
+  "Locations": [
+    {
+      "id": "location-kyiv-center",
+      "name": "Steak & Wine Kyiv Downtown",
+      "address": "Khreshchatyk St 15, Kyiv, Ukraine",
+      "phone": "+380441234567",
+      "capacity": 80
+    }
+  ],
+  "Tables": [
+    {
+      "id": "table-kyiv-10",
+      "locationId": "location-kyiv-center",
+      "tableNumber": 10,
+      "capacity": 6,
+      "isAvailable": true
+    }
+  ],
+  "Waiters": [
+    {
+      "userId": "waiter-andrii-01",
+      "locationId": "location-kyiv-center",
+      "firstName": "Andrii",
+      "lastName": "Kovalenko",
+      "email": "waiter.andrii@restaurant.com"
+    }
+  ],
+  "Dishes": [
+    {
+      "id": "dish-tea-cup",
+      "name": "Jasmine Green Tea (Cup, 300ml)",
+      "description": "Fragrant steamed green tea leaves with jasmine blossom.",
+      "dishType": 0,
+      "price": 60,
+      "weight": "300ml",
+      "calories": "5",
+      "proteins": "0",
+      "fats": "0",
+      "carbohydrates": "1",
+      "vitamins": "Antioxidants",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false,
+      "upsellBulkDishId": "dish-tea-pot",
+      "upsellDescription": "Combine into 1L Teapot to save 50 UAH"
+    },
+    {
+      "id": "dish-tea-pot",
+      "name": "Jasmine Green Tea (Teapot, 1000ml)",
+      "description": "Large sharing glass teapot for up to 4 guests.",
+      "dishType": 0,
+      "price": 130,
+      "weight": "1000ml",
+      "calories": "15",
+      "proteins": "0",
+      "fats": "0",
+      "carbohydrates": "3",
+      "vitamins": "Antioxidants",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false
+    },
+    {
+      "id": "dish-beer-pint",
+      "name": "Craft Hazy IPA (Pint, 500ml)",
+      "description": "Juicy tropical hops with citrus aromas. 6.2% ABV.",
+      "dishType": 0,
+      "price": 140,
+      "weight": "500ml",
+      "calories": "210",
+      "proteins": "2",
+      "fats": "0",
+      "carbohydrates": "18",
+      "vitamins": "B-Complex",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": true,
+      "alcoholByVolume": "6.2%",
+      "upsellBulkDishId": "dish-beer-pitcher",
+      "upsellDescription": "Upgrade to 2L Sharing Pitcher"
+    },
+    {
+      "id": "dish-beer-pitcher",
+      "name": "Craft Hazy IPA (Pitcher, 2000ml)",
+      "description": "2-liter sharing pitcher for group tables.",
+      "dishType": 0,
+      "price": 460,
+      "weight": "2000ml",
+      "calories": "840",
+      "proteins": "8",
+      "fats": "0",
+      "carbohydrates": "72",
+      "vitamins": "B-Complex",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": true,
+      "alcoholByVolume": "6.2%"
+    },
+    {
+      "id": "dish-wine-glass",
+      "name": "Cabernet Sauvignon (Glass, 150ml)",
+      "description": "Full-bodied Ukrainian craft red wine from Odesa region. 13.5% ABV.",
+      "dishType": 0,
+      "price": 180,
+      "weight": "150ml",
+      "calories": "125",
+      "proteins": "0.1",
+      "fats": "0",
+      "carbohydrates": "4",
+      "vitamins": "Resveratrol",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": true,
+      "alcoholByVolume": "13.5%"
+    },
+    {
+      "id": "dish-ribeye",
+      "name": "Dry-Aged Ribeye Steak",
+      "description": "Prime Black Angus beef grilled to medium with herb butter.",
+      "dishType": 1,
+      "price": 480,
+      "weight": "350g",
+      "calories": "680",
+      "proteins": "52",
+      "fats": "45",
+      "carbohydrates": "2",
+      "vitamins": "B12, Iron, Zinc",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false
+    },
+    {
+      "id": "dish-caesar",
+      "name": "Classic Chicken Caesar Salad",
+      "description": "Crisp romaine, grilled chicken breast, shaved parmesan, garlic croutons.",
+      "dishType": 0,
+      "price": 240,
+      "weight": "280g",
+      "calories": "390",
+      "proteins": "28",
+      "fats": "22",
+      "carbohydrates": "14",
+      "vitamins": "A, C, Calcium",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false
+    },
+    {
+      "id": "dish-tomyum",
+      "name": "Tom Yum Goong",
+      "description": "Spicy and sour lemongrass soup with tiger prawns and oyster mushrooms.",
+      "dishType": 1,
+      "price": 290,
+      "weight": "400ml",
+      "calories": "260",
+      "proteins": "19",
+      "fats": "12",
+      "carbohydrates": "16",
+      "vitamins": "C, E",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false
+    }
+  ],
+  "Reservations": [
+    {
+      "id": "demo-reservation-1",
+      "customerId": "a891d3a0-1071-7033-1d6a-efbd411555f2",
+      "tableId": "table-kyiv-10",
+      "waiterId": "waiter-andrii-01",
+      "createdByWaiter": false,
+      "startTime": "2026-11-15T18:00:00Z",
+      "endTime": "2026-11-15T21:00:00Z",
+      "guestCount": 4,
+      "status": 0
+    }
+  ],
+  "GroupReservations": [
+    {
+      "groupReservationId": "demo-group-1",
+      "reservationId": "demo-reservation-1",
+      "reservationToken": "invite-token-kyiv-nov15",
+      "status": 0
+    }
+  ],
+  "GuestSessions": [
+    {
+      "guestSessionId": "session-owner-1",
+      "groupReservationId": "demo-group-1",
+      "guestName": "Demo Owner",
+      "isOwnerSession": true,
+      "ownerUserId": "a891d3a0-1071-7033-1d6a-efbd411555f2",
+      "isSubmitted": true,
+      "originAddress": "Obolonskyi Ave 14, Kyiv",
+      "dishes": [
+        { "dishId": "dish-ribeye", "quantity": 1 },
+        { "dishId": "dish-beer-pint", "quantity": 1 }
+      ]
+    },
+    {
+      "guestSessionId": "session-guest-2",
+      "groupReservationId": "demo-group-1",
+      "guestName": "Andrii",
+      "isOwnerSession": false,
+      "isSubmitted": true,
+      "originAddress": "Sahaidachnoho St 25, Podil, Kyiv",
+      "dishes": [
+        { "dishId": "dish-caesar", "quantity": 1 },
+        { "dishId": "dish-tea-cup", "quantity": 2 }
+      ]
+    },
+    {
+      "guestSessionId": "session-guest-3",
+      "groupReservationId": "demo-group-1",
+      "guestName": "Olena",
+      "isOwnerSession": false,
+      "isSubmitted": true,
+      "originAddress": "Mykoly Bazhana Ave 8, Pozniaky, Kyiv",
+      "dishes": [
+        { "dishId": "dish-tea-cup", "quantity": 1 },
+        { "dishId": "dish-wine-glass", "quantity": 1 }
+      ]
+    },
+    {
+      "guestSessionId": "session-guest-4",
+      "groupReservationId": "demo-group-1",
+      "guestName": "Max",
+      "isOwnerSession": false,
+      "isSubmitted": false,
+      "originAddress": "Instytutska St 18, Pechersk, Kyiv",
+      "dishes": [
+        { "dishId": "dish-tomyum", "quantity": 1 },
+        { "dishId": "dish-beer-pint", "quantity": 1 }
+      ]
+    }
+  ],
+  "Orders": [
+    {
+      "orderId": "order-demo-1",
+      "customerId": "a891d3a0-1071-7033-1d6a-efbd411555f2",
+      "reservationId": "demo-reservation-1",
+      "reservationAddress": "Khreshchatyk St 15, Kyiv, Table 10",
+      "reservationTime": "Nov 15, 2026, 18:00 - 21:00",
+      "dishes": [],
+      "status": 0
+    }
+  ],
+  "Feedback": [
+    {
+      "reservationId": "prev-reservation-01",
+      "createdAt": "2026-10-20T19:30:00Z",
+      "locationId": "location-kyiv-center",
+      "rating": 5,
+      "comment": "Amazing dry-aged steak and fantastic service by Andrii!"
+    }
+  ],
+  "Notifications": [
+    {
+      "id": "notif-01",
+      "userId": "a891d3a0-1071-7033-1d6a-efbd411555f2",
+      "title": "Group Pre-Order Reminder",
+      "message": "Max has not submitted their cart yet for reservation demo-reservation-1.",
+      "createdAt": "2026-11-04T12:00:00Z",
+      "isRead": false
+    }
+  ]
+}
+

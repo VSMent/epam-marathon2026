@@ -1,0 +1,211 @@
+{
+  "info": {
+    "name": "Restaurant Group Pre-Order API (EPAM Marathon)",
+    "description": "Postman Collection for Group Pre-Order features (Homework #5 / #6 / #8). Automatically updates the token variable upon Sign In.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "groupReservationId",
+      "value": "demo-group-1",
+      "type": "string"
+    },
+    {
+      "key": "reservationId",
+      "value": "demo-reservation-1",
+      "type": "string"
+    },
+    {
+      "key": "guestSessionId",
+      "value": "session-guest-4",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Dmytro\",\n  \"lastName\": \"Owner\",\n  \"email\": \"demo_owner@test.com\",\n  \"password\": \"Password123!\",\n  \"confirmPassword\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["register"]
+            }
+          }
+        },
+        {
+          "name": "Sign In (Get Token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.idToken) {",
+                  "    pm.collectionVariables.set('token', jsonData.idToken);",
+                  "    console.log('Saved idToken to collection variable');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo_owner@test.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["signin"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Level 1 - Group Sessions",
+      "item": [
+        {
+          "name": "Get Group Sessions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/guest/groups/{{groupReservationId}}/sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["guest", "groups", "{{groupReservationId}}", "sessions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Level 2 - Owner Session & Submit",
+      "item": [
+        {
+          "name": "Get Owner Guest Session ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reservations/{{reservationId}}/guest-session-id",
+              "host": ["{{baseUrl}}"],
+              "path": ["reservations", "{{reservationId}}", "guest-session-id"]
+            }
+          }
+        },
+        {
+          "name": "Submit Consolidated Pre-Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reservationId\": \"{{reservationId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/group-reservations/{{groupReservationId}}/submit",
+              "host": ["{{baseUrl}}"],
+              "path": ["group-reservations", "{{groupReservationId}}", "submit"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Level 3 - Delete Guest Session",
+      "item": [
+        {
+          "name": "Delete Guest Session",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/guest/groups/{{groupReservationId}}/sessions/{{guestSessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["guest", "groups", "{{groupReservationId}}", "sessions", "{{guestSessionId}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

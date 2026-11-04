@@ -6,6 +6,34 @@ This repo uses three deployment tracks:
 - AWS Syndicate for the backend application under `backend/restaurant-backend-app`
 - Angular build artifacts synced to the frontend S3 bucket under `frontend/restaurant-frontend-app`
 
+## 📚 API Testing, Database Seeding & Postman
+
+Quick links for testing the live API and running homework scenarios:
+
+| Resource | Path | Description |
+| :--- | :--- | :--- |
+| **Postman Guide** | [`postman/POSTMAN_GUIDE.md`](./postman/POSTMAN_GUIDE.md) | Step-by-step instructions for Postman, authentication, and live response examples |
+| **Postman Collection** | [`postman/group-orders.postman_collection.json`](./postman/group-orders.postman_collection.json) | Importable Postman collection with auto-token extraction |
+| **API Contracts** | [`docs/API_CONTRACTS.md`](./docs/API_CONTRACTS.md) | Full endpoint specs, DTOs, and error codes for HW5 / HW6 / HW8 |
+| **Database Seed Data** | [`data/initial-seed-data.json`](./data/initial-seed-data.json) | Complete interconnected dataset for DynamoDB (HW1 US1/US2/US3, HW5) |
+| **Seeder Script** | [`scripts/seed_all_tables.py`](./scripts/seed_all_tables.py) | Python script to populate all DynamoDB tables with seed data |
+
+To populate DynamoDB tables at any time:
+```powershell
+python scripts/seed_all_tables.py
+```
+
+Quick terminal test with seeded data:
+```powershell
+# 1. Sign in
+$token = (Invoke-RestMethod -Uri "https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/signin" -Method Post -Body '{"email":"demo_owner@test.com","password":"Password123!"}' -ContentType "application/json").idToken
+
+# 2. Query seeded group pre-order sessions
+Invoke-RestMethod -Uri "https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/guest/groups/demo-group-1/sessions" -Headers @{"Authorization"="Bearer $token"} | ConvertTo-Json -Depth 5
+```
+
+---
+
 ## Prerequisites
 
 Install the tools below on your machine:
