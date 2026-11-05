@@ -4,7 +4,7 @@ import { Participant } from '@app/models/group-orders/participant.model';
 
 @Component({
   selector: 'app-participant-card', imports: [CurrencyPipe],
-
+  styleUrl: './participant-card.component.scss',
   templateUrl: './participant-card.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
 })
@@ -15,6 +15,7 @@ export class ParticipantCardComponent {
   // рахується саме, коли змінюється participant
   readonly title = computed(() => {
     const person = this.participant();
+    // return person.type === 'Owner' ? `Owner: ${person.name}` : `Guest: ${person.name}`;
     return person.type === 'Owner' ? `Owner: ${person.name}` : `Guest: ${person.name}`;
   });
 }

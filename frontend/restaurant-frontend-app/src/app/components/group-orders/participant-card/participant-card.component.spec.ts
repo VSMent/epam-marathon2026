@@ -49,7 +49,7 @@ describe('Практичне · картка учасника', () => {
     });
 
     it('фото страви має розмір 40×40', () => {
-      const img = render(OLENA).querySelector('img');
+      const img = render(OLENA).querySelector('img.avatar');
       expect(img?.getAttribute('width')).toBe('40');
       expect(img?.getAttribute('height')).toBe('40');
     });

@@ -1,9 +1,36 @@
-<main class="page">
-  <h1>Group Pre-Order</h1>
+<main>
+  <section class="page group-order-page">
+    <h1>Group Pre-Order</h1>
+    <div class="reservation-meta">
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/location-green.svg" alt="" aria-hidden="true" />
+        {{ invite().LocationAddress }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/calendar-green.svg" alt="" aria-hidden="true" />
+        {{ invite().StartTime | date: 'mediumDate' }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/clock-green.svg" alt="" aria-hidden="true" />
+        {{ invite().StartTime | date: 'HH:mm' }}–{{ invite().EndTime | date: 'HH:mm' }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/people-green.svg" alt="" aria-hidden="true" />
+        {{ participants().length }} of {{ invite().MaxGuestCount }} guests
+      </span>
+    </div>
 
-  <ul class="participants">
-    @for (person of participants(); track person.id) {
-    <li><app-participant-card [participant]="person" /></li>
-    }
-  </ul>
+    <ul class="participants">
+      @for (person of participants(); track person.id) {
+      <li><app-participant-card [participant]="person" /></li>
+      }
+    </ul>
+
+    <footer>
+      <h2>Grand Total:<span>{{total() | currency}}</span></h2>
+      <button type="button" class="button button--primary button--large">
+        Submit Pre-Order
+      </button>
+    </footer>
+  </section>
 </main>

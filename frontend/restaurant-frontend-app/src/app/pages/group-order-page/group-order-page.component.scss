@@ -1,0 +1,76 @@
+@use 'app/shared/styles/abstracts/colors' as color;
+@use 'app/shared/styles/abstracts/typography' as typo;
+@use 'sass:color' as col;
+
+main {
+  min-height: 100vh;
+  background-color: col.scale(color.$neutral-100, $lightness: -10%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 16px;
+  box-sizing: border-box;
+}
+
+.group-order-page {
+  width: 100%;
+  max-width: 835px;
+  background-color: color.$neutral-100;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 24px 16px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.reservation-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin: 12px 0;
+  color: color.$neutral-600;
+  font-size: 14px;
+  line-height: 3rem;
+  border-bottom: 1px solid color.$bg-green;
+
+  .meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    .line-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+  }
+}
+
+.participants {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+footer {
+  margin-top: 24px;
+
+  h2 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    span {
+      color: color.$green-600;
+    }
+  }
+
+  .button {
+    width: 100%;
+  }
+}

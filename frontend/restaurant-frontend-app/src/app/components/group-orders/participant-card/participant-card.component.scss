@@ -1,0 +1,197 @@
+@use 'app/shared/styles/abstracts/colors' as color;
+@use 'app/shared/styles/abstracts/typography' as typo;
+@use 'app/shared/styles/card' as card;
+
+.card {
+  @include card.common-card;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+  color: color.$neutral-900;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+
+  &.edit-btn {
+    color: color.$neutral-900;
+    text-decoration: underline;
+
+    &:hover {
+      background-color: color.$neutral-100;
+    }
+  }
+
+  &.remove-btn {
+    color: color.$red-400;
+
+    &:hover {
+      background-color: color.$red-100;
+    }
+  }
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &.submitted {
+    background-color: color.$green-100;
+    color: color.$green-800;
+  }
+
+  &.pending {
+    background-color: color.$orange-100;
+    color: color.$orange-600;
+  }
+}
+
+.items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid color.$neutral-100;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .delete-item-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: color.$neutral-600;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      opacity: 1;
+      background-color: color.$neutral-100;
+    }
+
+    img {
+      display: block;
+    }
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+    &.initial {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: color.$green-100;
+      color: color.$green-800;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+
+  .name {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: color.$neutral-900;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .qty {
+    margin: 0;
+    font-size: 14px;
+    color: color.$neutral-600;
+    white-space: nowrap;
+  }
+
+  .price {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: color.$neutral-900;
+    min-width: 60px;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+.empty {
+  color: color.$neutral-400;
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid color.$neutral-200;
+  font-size: 16px;
+  font-weight: 500;
+  color: color.$neutral-900;
+}
