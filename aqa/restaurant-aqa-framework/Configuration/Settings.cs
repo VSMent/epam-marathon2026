@@ -46,7 +46,10 @@ public sealed record Settings(
     string? AdminPassword,
     string? TestTableId,
     string? TestTableWaiterUsername,
-    string? TestTableWaiterPassword)
+    string? TestTableWaiterPassword,
+    string? FixtureLocationId,
+    string? FixtureTableId,
+    string? FixtureAlcoholDishId)
 {
     private static readonly Lazy<Settings> Lazy = new(Load);
 
@@ -59,6 +62,15 @@ public sealed record Settings(
             ? (user, password)
             : throw new InvalidOperationException(
                 "WAITER_USERNAME/WAITER_PASSWORD are not set. Set them in '.env' or as environment variables. See '.env.example'.");
+
+    /// <summary>The standing fixtures group pre-order scenarios run on: a location with a table, and an alcoholic
+    /// dish served there. They are created once and never removed by the sweep (no AQA-Sample- prefix).</summary>
+    public (string LocationId, string TableId, string AlcoholDishId) RequireFixture() =>
+        FixtureLocationId is { Length: > 0 } location && FixtureTableId is { Length: > 0 } table
+        && FixtureAlcoholDishId is { Length: > 0 } dish
+            ? (location, table, dish)
+            : throw new InvalidOperationException(
+                "FIXTURE_LOCATION_ID, FIXTURE_TABLE_ID and FIXTURE_ALCOHOL_DISH_ID are not set. Set them in '.env' or as environment variables. See '.env.example'.");
 
     private static Settings Load()
     {
@@ -81,7 +93,10 @@ public sealed record Settings(
             AdminPassword: ReadOptionalString("ADMIN_PASSWORD"),
             TestTableId: ReadOptionalString("TESTTABLE_ID"),
             TestTableWaiterUsername: ReadOptionalString("TESTTABLE_WAITER_USERNAME"),
-            TestTableWaiterPassword: ReadOptionalString("TESTTABLE_WAITER_PASSWORD"));
+            TestTableWaiterPassword: ReadOptionalString("TESTTABLE_WAITER_PASSWORD"),
+            FixtureLocationId: ReadOptionalString("FIXTURE_LOCATION_ID"),
+            FixtureTableId: ReadOptionalString("FIXTURE_TABLE_ID"),
+            FixtureAlcoholDishId: ReadOptionalString("FIXTURE_ALCOHOL_DISH_ID"));
     }
 
     private static string RequireString(string key)

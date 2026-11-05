@@ -137,6 +137,14 @@
       "firstName": "Mykhailo",
       "lastName": "Hutsul",
       "email": "waiter.mykhailo@restaurant.com"
+
+    },
+    {
+      "userId": "28f11370-70b1-7059-41a7-c42d4c0e0dbf",
+      "locationId": "6261d713-f347-4c12-a26d-e7da5d94bb5a",
+      "firstName": "AQA",
+      "lastName": "Waiter",
+      "email": "aqa.waiter@example.com"
     }
   ],
   "Dishes": [
