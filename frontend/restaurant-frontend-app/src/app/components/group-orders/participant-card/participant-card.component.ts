@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { Participant } from '@app/models/group-orders/participant.model';
 
@@ -12,6 +12,9 @@ export class ParticipantCardComponent {
   // що картка отримує ззовні — як параметр функції
   readonly participant = input.required<Participant>();
   readonly isMe = input<boolean>(false);
+  readonly canRemove = input<boolean>(false);
+
+  readonly removeClick = output<Participant>();
 
   // рахується саме, коли змінюється participant
   readonly title = computed(() => {
@@ -19,7 +22,6 @@ export class ParticipantCardComponent {
       return 'My Pre-Order';
     }
     const person = this.participant();
-    // return person.type === 'Owner' ? `Owner: ${person.name}` : `Guest: ${person.name}`;
     return person.type === 'Owner' ? `Owner: ${person.name}` : `Guest: ${person.name}`;
   });
 }

@@ -12,8 +12,15 @@
     <div class="header-actions">
       @if (participant().type === 'Owner') {
       <button type="button" class="action-btn edit-btn">Edit my Pre-Order</button>
-      } @else {
-      <button type="button" class="action-btn remove-btn">Remove Guest</button>
+      } @else if (canRemove()) {
+      <button
+        type="button"
+        class="action-btn remove-btn"
+        [attr.aria-label]="'Remove ' + participant().name"
+        (click)="removeClick.emit(participant())"
+      >
+        Remove Guest
+      </button>
       }
     </div>
   </header>

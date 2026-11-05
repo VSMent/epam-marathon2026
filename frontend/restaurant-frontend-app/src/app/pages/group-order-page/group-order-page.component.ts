@@ -47,6 +47,9 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
   readonly isModalOpen = signal(false);
   readonly isSubmitting = signal(false);
 
+  readonly guestToRemove = signal<Participant | null>(null);
+  readonly isRemovingGuest = signal(false);
+
   readonly lastUpdatedAt = signal<Date | null>(null);
   readonly refreshError = signal(false);
 
@@ -159,6 +162,37 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
       this.pollingSub.unsubscribe();
       this.pollingSub = undefined;
     }
+  }
+
+  openRemoveGuestModal(participant: Participant): void {
+    this.guestToRemove.set(participant);
+  }
+
+  closeRemoveGuestModal(): void {
+    if (!this.isRemovingGuest()) {
+      this.guestToRemove.set(null);
+    }
+  }
+
+  confirmRemoveGuest(): void {
+    const guest = this.guestToRemove();
+    const inv = this.invite();
+    if (!guest || !inv || this.isRemovingGuest()) {
+      return;
+    }
+
+    this.isRemovingGuest.set(true);
+    this.service.removeSession$(inv.GroupReservationId, guest.id).subscribe({
+      next: (response) => {
+        this.participants.set(response.participants);
+        this.isRemovingGuest.set(false);
+        this.guestToRemove.set(null);
+        this.toast.success(`Removed ${guest.name}`);
+      },
+      error: () => {
+        this.isRemovingGuest.set(false);
+      },
+    });
   }
 
   openModal(): void {

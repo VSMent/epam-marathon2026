@@ -74,7 +74,12 @@
     <ul class="participants">
       @for (person of participants(); track person.id) {
       <li>
-        <app-participant-card [participant]="person" [isMe]="person.id === ownerSessionId()" />
+        <app-participant-card
+          [participant]="person"
+          [isMe]="person.id === ownerSessionId()"
+          [canRemove]="groupStatus() !== 'Submitted' && person.type === 'Guest'"
+          (removeClick)="openRemoveGuestModal($event)"
+        />
       </li>
       }
     </ul>
@@ -114,6 +119,33 @@
       </button>
       <button type="button" class="button button--primary dialog-submit-btn" (click)="confirmSubmit()" [disabled]="isSubmitting()">
         {{ isSubmitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </div>
+  </app-modal>
+  }
+
+  @if (guestToRemove(); as guest) {
+  <app-modal [title]="'Remove Guest'" [width]="'520px'" (closed)="closeRemoveGuestModal()">
+    <p class="dialog-description">
+      Are you sure you want to remove <strong>{{ guest.name }}</strong> and their pre-order from this reservation?
+      This action cannot be undone.
+    </p>
+    <div modal-actions class="dialog-actions">
+      <button
+        type="button"
+        class="button button--tertiary dialog-cancel-btn"
+        (click)="closeRemoveGuestModal()"
+        [disabled]="isRemovingGuest()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="button button--secondary remove-confirm-btn"
+        (click)="confirmRemoveGuest()"
+        [disabled]="isRemovingGuest()"
+      >
+        {{ isRemovingGuest() ? 'Removing…' : 'Remove Guest' }}
       </button>
     </div>
   </app-modal>

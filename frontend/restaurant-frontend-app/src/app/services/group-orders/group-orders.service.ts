@@ -61,4 +61,13 @@ export class GroupOrdersService {
       { reservationId }
     );
   }
+
+  removeSession$(
+    groupReservationId: string,
+    guestSessionId: string
+  ): Observable<GroupSessionsResponse> {
+    return this.http.delete<GroupSessionsResponse>(
+      `${this.baseUrl}/guest/groups/${groupReservationId}/sessions/${guestSessionId}`
+    );
+  }
 }
