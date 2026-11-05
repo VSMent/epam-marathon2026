@@ -209,9 +209,16 @@ public class GuestSessionService(
     {
         var sessions = await guestSessionRepository.GetAllByGroupReservationIdAsync(groupReservationId);
 
+        // The owner's own items are saved as their regular pre-order (Orders table) from the menu.
+        // When that order exists it is the source of truth for the owner; otherwise use the session dishes.
+        var currentGroup = await groupReservationRepository.GetGroupReservationByIdAsync(groupReservationId);
+        var ownerOrder = await GetOwnerOrderAsync(currentGroup);
+        bool groupSubmitted = currentGroup?.Status == GroupReservationStatus.Submitted;
+
         var dishIds = sessions
             .SelectMany(s => s.Dishes)
             .Select(s => s.DishId)
+            .Concat(ownerOrder?.Dishes.Select(d => d.DishId) ?? Enumerable.Empty<string>())
             .Distinct()
             .ToArray();
 
@@ -222,7 +229,13 @@ public class GuestSessionService(
 
         foreach (var guestSession in sessions)
         {
-            var items = guestSession.Dishes
+            // Before the group is submitted, the owner's items come from their regular pre-order.
+            // After it is submitted, the Orders entry holds the consolidated group order, so the owner
+            // shows the snapshot of their own items saved on their session at submit time.
+            bool useOwnerOrder = guestSession.IsOwnerSession && !groupSubmitted && ownerOrder is not null;
+            var sourceDishes = useOwnerOrder ? ownerOrder!.Dishes : guestSession.Dishes;
+
+            var items = sourceDishes
                 .Where(d => dishesById.ContainsKey(d.DishId))
                 .Select(d => new OrderItemResponse
                 {
@@ -259,13 +272,31 @@ public class GuestSessionService(
                 }
             }
 
-            var participant = new Participant(guestSession.Id, type, name, items, total, guestSession.IsSubmitted);
+            // The owner counts as submitted once their own pre-order is submitted (or the group was sent).
+            bool isSubmitted = guestSession.IsSubmitted
+                || (useOwnerOrder && IsOrderSubmitted(ownerOrder!))
+                || (guestSession.IsOwnerSession && groupSubmitted);
+
+            var participant = new Participant(guestSession.Id, type, name, items, total, isSubmitted);
             participants.Add(participant);
         }
 
         var orderedParticipants = participants.OrderByDescending(p => p.Type == ParticipantType.Owner).ToList();
         return new GetAllSessionsResponse(orderedParticipants, orderedParticipants.Sum(p => p.Total));
     }
+
+    private async Task<Order?> GetOwnerOrderAsync(GroupReservation? groupReservation)
+    {
+        if (string.IsNullOrEmpty(groupReservation?.ReservationId))
+        {
+            return null;
+        }
+
+        return await orderRepository.GetOrderByReservationIdAsync(groupReservation.ReservationId);
+    }
+
+    private static bool IsOrderSubmitted(Order order) =>
+        order.Status is OrderStatus.SubmittedByCustomer or OrderStatus.Submitted;
 
     public async Task<string> GetOwnerGuestSessionIdAsync(string userId, string reservationId)
     {
@@ -334,8 +365,31 @@ public class GuestSessionService(
         }
 
         var sessions = await guestSessionRepository.GetAllByGroupReservationIdAsync(groupReservationId);
-        var submittedSessions = sessions.Where(s => s.IsSubmitted).ToList();
-        var allDishes = submittedSessions.SelectMany(s => s.Dishes).ToList();
+        var ownerSession = sessions.FirstOrDefault(s => s.IsOwnerSession);
+        var ownerOrder = await orderRepository.GetOrderByReservationIdAsync(resId);
+
+        // The owner's own items live in their regular pre-order. They must be submitted first,
+        // otherwise they would be left out of the group order sent to the restaurant.
+        List<OrderItem> ownerDishes = [];
+        if (ownerOrder is { Dishes.Count: > 0 })
+        {
+            if (!IsOrderSubmitted(ownerOrder))
+            {
+                throw new ValidationException("Submit your own pre-order before submitting the group pre-order.");
+            }
+
+            ownerDishes = ownerOrder.Dishes;
+        }
+        else if (ownerSession is { IsSubmitted: true })
+        {
+            ownerDishes = ownerSession.Dishes;
+        }
+
+        var guestDishes = sessions
+            .Where(s => !s.IsOwnerSession && s.IsSubmitted)
+            .SelectMany(s => s.Dishes);
+
+        var allDishes = ownerDishes.Concat(guestDishes).ToList();
 
         if (!allDishes.Any())
         {
@@ -377,6 +431,17 @@ public class GuestSessionService(
                 Status = OrderStatus.SubmittedByCustomer
             };
             await orderRepository.SaveOrderAsync(newOrder);
+        }
+
+        if (ownerSession != null)
+        {
+            // Keep the owner's own items on their session. The Orders entry now holds the whole group
+            // order, so the group view needs this snapshot to show only the owner's own dishes.
+            ownerSession.Dishes = ownerDishes
+                .Select(d => new OrderItem { DishId = d.DishId, Quantity = d.Quantity, State = d.State })
+                .ToList();
+            ownerSession.IsSubmitted = true;
+            await guestSessionRepository.SaveAsync(ownerSession);
         }
 
         group.Status = GroupReservationStatus.Submitted;

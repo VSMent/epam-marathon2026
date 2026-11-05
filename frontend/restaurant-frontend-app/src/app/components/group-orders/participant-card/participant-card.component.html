@@ -19,7 +19,9 @@
 
     <div class="header-actions">
       @if (participant().type === 'Owner') {
-      <button type="button" class="action-btn edit-btn">Edit my Pre-Order</button>
+      @if (canEditOwn()) {
+      <button type="button" class="action-btn edit-btn" (click)="editClick.emit(participant())">Edit my Pre-Order</button>
+      }
       } @else {
         @if (hasEmptyCart() && !participant().isSubmitted) {
         <button

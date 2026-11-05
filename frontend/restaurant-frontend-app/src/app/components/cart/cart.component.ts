@@ -142,7 +142,7 @@ export class CartComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.loadOrders();
+          this.openMenuForOrder(order);
         },
         error: (error) => {
           console.error(
@@ -178,8 +178,25 @@ export class CartComponent implements OnInit {
   }
 
   addDishToOrder(orderId: string): void {
-    console.log(`Adding a dish to order ${orderId}`);
-    void this.router.navigate(['/menu']);
+    const order = this.findOrder(orderId);
+
+    if (!order) {
+      return;
+    }
+
+    this.openMenuForOrder(order);
+  }
+
+  // Opens the menu in pre-order mode for this order's reservation (same params as the reservation card).
+  private openMenuForOrder(order: Order): void {
+    this.closeCart();
+    void this.router.navigate(['/menu'], {
+      queryParams: {
+        preOrder: 'true',
+        reservationId: order.reservationId,
+        reservationLabel: `${order.reservationAddress}, ${order.reservationTime}`,
+      },
+    });
   }
 
   updateDishQuantity(

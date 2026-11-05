@@ -125,4 +125,52 @@ describe('CartComponent', () => {
       '/reservations',
     ]);
   });
+
+  it('opens the menu in pre-order mode when adding a dish to an order', () => {
+    component.orders.set([
+      {
+        orderId: 'order-1',
+        reservationId: 'res-1',
+        reservationAddress: 'Main st, Table 2',
+        reservationTime: 'Nov 10, 2026, 6:00 PM - 8:00 PM',
+        status: 0,
+      },
+    ] as Order[]);
+
+    component.addDishToOrder('order-1');
+
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/menu'], {
+      queryParams: {
+        preOrder: 'true',
+        reservationId: 'res-1',
+        reservationLabel: 'Main st, Table 2, Nov 10, 2026, 6:00 PM - 8:00 PM',
+      },
+    });
+  });
+
+  it('reopens a submitted order and opens the menu in pre-order mode when editing it', () => {
+    preOrdersServiceMock.unsubmitPreOrderByReservationId.and.returnValue(of({}));
+    component.orders.set([
+      {
+        orderId: 'order-1',
+        reservationId: 'res-1',
+        reservationAddress: 'Main st, Table 2',
+        reservationTime: 'Nov 10, 2026, 6:00 PM - 8:00 PM',
+        status: 3,
+      },
+    ] as Order[]);
+    spyOn(component.closeCartEvent, 'emit');
+
+    component.editOrder('order-1');
+
+    expect(preOrdersServiceMock.unsubmitPreOrderByReservationId).toHaveBeenCalledWith('res-1');
+    expect(component.closeCartEvent.emit).toHaveBeenCalled();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/menu'], {
+      queryParams: {
+        preOrder: 'true',
+        reservationId: 'res-1',
+        reservationLabel: 'Main st, Table 2, Nov 10, 2026, 6:00 PM - 8:00 PM',
+      },
+    });
+  });
 });

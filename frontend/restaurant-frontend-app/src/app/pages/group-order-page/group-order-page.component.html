@@ -132,6 +132,12 @@
     </div>
     }
 
+    @if (groupStatus() !== 'Submitted' && ownerNeedsSubmit()) {
+    <div class="warning-banner">
+      Submit your own pre-order first — open your cart and press "Submit Pre-order". The group can be sent after that.
+    </div>
+    }
+
     @if (groupStatus() !== 'Submitted' && unsubmittedCount() > 0) {
     <div class="warning-banner">
       {{ unsubmittedCount() }} participant{{ unsubmittedCount() > 1 ? 's' : '' }} hasn't submitted their cart yet —
@@ -150,9 +156,11 @@
           [participant]="person"
           [isMe]="person.id === ownerSessionId()"
           [canRemove]="groupStatus() !== 'Submitted' && person.type === 'Guest'"
+          [canEditOwn]="groupStatus() !== 'Submitted'"
           [showAlcoholOnly]="showAlcoholOnly()"
           (removeClick)="openRemoveGuestModal($event)"
           (reminderClick)="sendReminder($event)"
+          (editClick)="editOwnPreOrder()"
         />
       </li>
       }

@@ -13,10 +13,12 @@ export class ParticipantCardComponent {
   readonly participant = input.required<Participant>();
   readonly isMe = input<boolean>(false);
   readonly canRemove = input<boolean>(false);
+  readonly canEditOwn = input<boolean>(false);
   readonly showAlcoholOnly = input<boolean>(false);
 
   readonly removeClick = output<Participant>();
   readonly reminderClick = output<Participant>();
+  readonly editClick = output<Participant>();
 
   readonly title = computed(() => {
     if (this.isMe()) {

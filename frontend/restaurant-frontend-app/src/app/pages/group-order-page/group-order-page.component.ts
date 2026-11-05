@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { forkJoin, interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -37,6 +37,7 @@ import {
 export class GroupOrderPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(GroupOrdersService);
+  private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -135,8 +136,13 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
     this.participants().some((p) => p.items.length > 0)
   );
 
+  // The owner's own items must be submitted (from their cart) before the group can be sent.
+  readonly ownerNeedsSubmit = computed(() =>
+    this.participants().some((p) => p.type === 'Owner' && !p.isSubmitted && p.items.length > 0)
+  );
+
   readonly canSubmit = computed(() =>
-    this.consolidatedOrder().items.length > 0 && !this.isSubmitting()
+    this.consolidatedOrder().items.length > 0 && !this.isSubmitting() && !this.ownerNeedsSubmit()
   );
 
   // US2: Alcohol indicators and count
@@ -347,6 +353,43 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Owner's "Edit my Pre-Order": reopen their pre-order if it was submitted, then go to the menu
+  // in pre-order mode (same query params the reservation card uses).
+  editOwnPreOrder(): void {
+    const reservationId = this.reservationId();
+    const reservationLabel = this.reservationLabel();
+    const openMenu = (): void => {
+      void this.router.navigate(['/menu'], {
+        queryParams: { preOrder: 'true', reservationId, reservationLabel },
+      });
+    };
+
+    const ownerSubmitted = this.participants().some((p) => p.type === 'Owner' && p.isSubmitted);
+    if (!ownerSubmitted) {
+      openMenu();
+      return;
+    }
+
+    this.service.unsubmitOwnPreOrder$(reservationId).subscribe({
+      next: () => openMenu(),
+      error: () => this.toast.error('Could not reopen your pre-order. Please try again.'),
+    });
+  }
+
+  private reservationLabel(): string {
+    const inv = this.invite();
+    if (!inv) return '';
+
+    const start = new Date(inv.StartTime);
+    const end = new Date(inv.EndTime);
+    return [
+      inv.LocationAddress,
+      `Table ${inv.TableNumber}`,
+      start.toDateString(),
+      `${start.toLocaleTimeString()} - ${end.toLocaleTimeString()}`,
+    ].join(', ');
+  }
+
   openModal(): void {
     this.isModalOpen.set(true);
   }
@@ -373,6 +416,7 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.isSubmitting.set(false);
+        this.toast.error('Could not submit the group pre-order. Please try again.');
       },
     });
   }

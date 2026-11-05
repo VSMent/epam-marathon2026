@@ -62,6 +62,11 @@ export class GroupOrdersService {
     );
   }
 
+  // Owner-only: reopens the owner's own pre-order (submitted -> editable) before they edit it from the menu.
+  unsubmitOwnPreOrder$(reservationId: string): Observable<unknown> {
+    return this.http.post(`${this.baseUrl}/orders/${reservationId}/unsubmit`, {});
+  }
+
   removeSession$(
     groupReservationId: string,
     guestSessionId: string
