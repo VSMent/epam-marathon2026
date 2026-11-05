@@ -141,7 +141,7 @@ public class EditReservationHandler : IApiRequestHandler
         var reservations = await _dbContext.QueryAsync<Reservation>(tableId, queryConfig).GetRemainingAsync();
         return reservations.Any(r =>
             r.Id != reservationId &&
-            r.Status != ReservationStatus.Cancelled &&
+            r.Status is not (ReservationStatus.Cancelled or ReservationStatus.Completed) &&
             IsOverlapOrClose(r.StartTime, r.EndTime, startTime, endTime));
     }
 

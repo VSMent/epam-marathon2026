@@ -230,6 +230,7 @@ public class ReservationService : IReservationService
 
         var hasOverlap = reservations.Any(r =>
             EqualityHelper.NotEqualsIgnoreCase(r.Id, reservationIdToExclude) &&
+            r.Status is not (ReservationStatus.Cancelled or ReservationStatus.Completed) &&
             r.EndTime > DateTime.UtcNow &&
             startTime < r.EndTime.Add(buffer) &&
             endTime > r.StartTime.Subtract(buffer));

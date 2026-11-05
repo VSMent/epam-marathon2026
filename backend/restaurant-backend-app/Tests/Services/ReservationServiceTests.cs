@@ -496,6 +496,7 @@ public class ReservationServiceTests
         existingReservation.TableId = table.Id;
         existingReservation.StartTime = DateTime.UtcNow.AddHours(1);
         existingReservation.EndTime = existingReservation.StartTime.AddHours(2);
+        existingReservation.Status = ReservationStatus.Reserved;
 
         _mockLocationService
             .Setup(r => r.GetLocationByTableIdAsync(request.TableId))
@@ -521,6 +522,58 @@ public class ReservationServiceTests
             () => _reservationService.CreateReservationAsync(request, callerId, isWaiter: false, _mockLogger.Object));
 
         Assert.Contains("overlaps", exception.Message);
+    }
+
+    [Theory]
+    [InlineAutoData(ReservationStatus.Cancelled)]
+    [InlineAutoData(ReservationStatus.Completed)]
+    public async Task CreateReservationAsync_OverlappingReservationIsCancelledOrCompleted_DoesNotThrowOverlap(
+        ReservationStatus inactiveStatus,
+        CreateReservationRequest request,
+        string callerId,
+        Location location,
+        Table table,
+        WaiterListItem waiter,
+        Reservation existingReservation)
+    {
+        table.Id = request.TableId;
+        table.LocationId = location.Id;
+        waiter.LocationId = location.Id;
+        request.StartTime = DateTime.UtcNow.AddHours(2);
+        request.EndTime = request.StartTime.AddHours(1);
+        request.GuestCount = 2;
+        table.Capacity = 4;
+
+        existingReservation.TableId = table.Id;
+        existingReservation.StartTime = DateTime.UtcNow.AddHours(1);
+        existingReservation.EndTime = existingReservation.StartTime.AddHours(2);
+        existingReservation.Status = inactiveStatus;
+
+        _mockLocationService
+            .Setup(r => r.GetLocationByTableIdAsync(request.TableId))
+            .ReturnsAsync(location);
+
+        _mockWaiterService
+            .Setup(r => r.GetLeastBusyWaiterAsync(location.Id))
+            .ReturnsAsync(waiter);
+
+        _mockWaiterService
+            .Setup(r => r.FindWaiterByIdAsync(waiter.UserId))
+            .ReturnsAsync(waiter);
+
+        _mockReservationRepository
+            .Setup(r => r.GetReservationsByTableIdAsync(request.TableId))
+            .ReturnsAsync([existingReservation]);
+
+        _mockLocationRepository
+            .Setup(r => r.GetTableByIdAsync(request.TableId))
+            .ReturnsAsync(table);
+
+        await _reservationService.CreateReservationAsync(request, callerId, isWaiter: false, _mockLogger.Object);
+
+        _mockReservationRepository
+            .Verify(r => r.SaveReservationAsync(It.Is<Reservation>(
+                r => r.TableId == request.TableId && r.Status == ReservationStatus.Reserved)), Times.Once());
     }
 
     [Theory, AutoData]
@@ -728,6 +781,7 @@ public class ReservationServiceTests
         existingReservation.TableId = newTable.Id;
         existingReservation.StartTime = DateTime.UtcNow.AddHours(1);
         existingReservation.EndTime = existingReservation.StartTime.AddHours(2);
+        existingReservation.Status = ReservationStatus.Reserved;
 
         _mockReservationRepository
             .Setup(r => r.GetReservationByIdAsync(reservation.Id))
