@@ -1,8 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { forkJoin, interval, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { GroupOrdersService } from '@app/services/group-orders/group-orders.service';
@@ -20,10 +30,11 @@ import { Participant } from '@app/models/group-orders/participant.model';
   templateUrl: './group-order-page.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class GroupOrderPageComponent implements OnInit {
+export class GroupOrderPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly service = inject(GroupOrdersService);
   private readonly toast = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly reservationId = signal<string>('');
   readonly invite = signal<GuestInvite | null>(null);
@@ -36,6 +47,10 @@ export class GroupOrderPageComponent implements OnInit {
   readonly isModalOpen = signal(false);
   readonly isSubmitting = signal(false);
 
+  readonly lastUpdatedAt = signal<Date | null>(null);
+  readonly refreshError = signal(false);
+
+  private pollingSub?: Subscription;
 
   readonly consolidatedOrder = computed(() => consolidatePreOrder(this.participants()));
 
@@ -59,9 +74,15 @@ export class GroupOrderPageComponent implements OnInit {
     this.loadData();
   }
 
+  ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
   loadData(): void {
+    this.stopPolling();
     this.isLoading.set(true);
     this.error.set(null);
+    this.refreshError.set(false);
 
     const resId = this.reservationId();
 
@@ -84,13 +105,60 @@ export class GroupOrderPageComponent implements OnInit {
         next: ({ sessions, status }) => {
           this.participants.set(sessions.participants);
           this.groupStatus.set(status.status);
+          this.lastUpdatedAt.set(new Date());
           this.isLoading.set(false);
+          this.startPolling();
         },
         error: (err: HttpErrorResponse) => {
           this.error.set(err);
           this.isLoading.set(false);
         },
       });
+  }
+
+  refresh(options?: { silent?: boolean }): void {
+    const inv = this.invite();
+    if (!inv || this.groupStatus() === 'Submitted') {
+      return;
+    }
+
+    forkJoin({
+      sessions: this.service.getSessions$(inv.GroupReservationId, options),
+      status: this.service.getStatus$(inv.GroupReservationId, options),
+    }).subscribe({
+      next: ({ sessions, status }) => {
+        this.participants.set(sessions.participants);
+        this.groupStatus.set(status.status);
+        this.lastUpdatedAt.set(new Date());
+        this.refreshError.set(false);
+        if (status.status === 'Submitted') {
+          this.stopPolling();
+        }
+      },
+      error: () => {
+        this.refreshError.set(true);
+      },
+    });
+  }
+
+  private startPolling(): void {
+    this.stopPolling();
+    if (this.groupStatus() === 'Submitted') {
+      return;
+    }
+
+    this.pollingSub = interval(15_000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.refresh({ silent: true });
+      });
+  }
+
+  private stopPolling(): void {
+    if (this.pollingSub) {
+      this.pollingSub.unsubscribe();
+      this.pollingSub = undefined;
+    }
   }
 
   openModal(): void {
@@ -112,6 +180,7 @@ export class GroupOrderPageComponent implements OnInit {
     this.service.submit$(invite.GroupReservationId, this.reservationId()).subscribe({
       next: () => {
         this.groupStatus.set('Submitted');
+        this.stopPolling();
         this.isSubmitting.set(false);
         this.isModalOpen.set(false);
         this.toast.success('Pre-order sent to the restaurant');

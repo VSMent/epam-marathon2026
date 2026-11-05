@@ -18,10 +18,27 @@
   <section class="page group-order-page">
 
     <div class="header-row">
-      <h1>Group Pre-Order</h1>
-      <span class="status-badge" [class.submitted]="groupStatus() === 'Submitted'">
-        {{ groupStatus() === 'Submitted' ? 'Sent to Restaurant' : 'Collecting pre-orders' }}
-      </span>
+      <div class="header-main">
+        <h1>Group Pre-Order</h1>
+        <span class="status-badge" [class.submitted]="groupStatus() === 'Submitted'">
+          {{ groupStatus() === 'Submitted' ? 'Sent to Restaurant' : 'Collecting pre-orders' }}
+        </span>
+      </div>
+
+      <div class="sync-bar">
+        @if (refreshError()) {
+        <span class="sync-status sync-status--error">
+          Couldn't refresh. Showing data from {{ lastUpdatedAt() | date: 'HH:mm:ss' }}
+        </span>
+        } @else if (lastUpdatedAt(); as updated) {
+        <span class="sync-status">
+          Updated at {{ updated | date: 'HH:mm:ss' }}
+        </span>
+        }
+        <button type="button" class="button button--secondary refresh-btn" (click)="refresh()">
+          Refresh
+        </button>
+      </div>
     </div>
 
     <div class="reservation-meta">
