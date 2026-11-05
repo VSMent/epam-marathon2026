@@ -1,4 +1,4 @@
-{
+﻿{
   "_metadata": {
     "description": "Initial seed dataset for EPAM Restaurant application DynamoDB tables (HW1, HW5, HW6, HW8).",
     "region": "us-west-2",
@@ -152,8 +152,8 @@
       "fats": "0",
       "carbohydrates": "1",
       "vitamins": "Antioxidants",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-lviv-oldtown",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/jasmine-tea-cup.jpg",
       "upsellBulkDishId": "dish-tea-pot",
@@ -171,8 +171,8 @@
       "fats": "0",
       "carbohydrates": "3",
       "vitamins": "Antioxidants",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-lviv-oldtown",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/jasmine-tea-pot.jpg"
     },
@@ -188,7 +188,7 @@
       "fats": "0",
       "carbohydrates": "18",
       "vitamins": "B-Complex",
-      "state": 0,
+      "state": 1,
       "locationId": "location-kyiv-center",
       "isAlcoholic": true,
       "alcoholByVolume": "6.2%",
@@ -208,7 +208,7 @@
       "fats": "0",
       "carbohydrates": "72",
       "vitamins": "B-Complex",
-      "state": 0,
+      "state": 1,
       "locationId": "location-kyiv-center",
       "isAlcoholic": true,
       "alcoholByVolume": "6.2%",
@@ -226,8 +226,8 @@
       "fats": "0",
       "carbohydrates": "4",
       "vitamins": "Resveratrol",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-odesa-coast",
       "isAlcoholic": true,
       "alcoholByVolume": "13.5%",
       "imageUrl": "assets/img/dishes/cabernet-wine-glass.jpg"
@@ -244,8 +244,8 @@
       "fats": "45",
       "carbohydrates": "2",
       "vitamins": "B12, Iron, Zinc",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-lviv-oldtown",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/ribeye-steak.jpg"
     },
@@ -261,8 +261,8 @@
       "fats": "22",
       "carbohydrates": "14",
       "vitamins": "A, C, Calcium",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-odesa-coast",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/caesar-salad.jpg"
     },
@@ -278,8 +278,8 @@
       "fats": "12",
       "carbohydrates": "16",
       "vitamins": "C, E",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-afar-bukovel",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/tom-yum.jpg"
     },
@@ -295,8 +295,8 @@
       "fats": "12",
       "carbohydrates": "14",
       "vitamins": "A, C, K",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-afar-bukovel",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/spring-salad.jpg"
     },
@@ -312,8 +312,8 @@
       "fats": "24",
       "carbohydrates": "22",
       "vitamins": "E, Folate, Potassium",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-afar-bukovel",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/avocado-pine-nut-bowl.jpg"
     },
@@ -329,7 +329,7 @@
       "fats": "10",
       "carbohydrates": "24",
       "vitamins": "C, Antioxidants",
-      "state": 0,
+      "state": 1,
       "locationId": "location-kyiv-center",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/fresh-strawberry-mint-salad.jpg"
@@ -346,8 +346,8 @@
       "fats": "9",
       "carbohydrates": "58",
       "vitamins": "A, B6, Iron, Fiber",
-      "state": 0,
-      "locationId": "location-kyiv-center",
+      "state": 1,
+      "locationId": "location-lviv-oldtown",
       "isAlcoholic": false,
       "imageUrl": "assets/img/dishes/roasted-sweet-potato-and-lentil-salad.jpg"
     }
@@ -362,6 +362,17 @@
       "startTime": "2026-11-15T18:00:00Z",
       "endTime": "2026-11-15T21:00:00Z",
       "guestCount": 4,
+      "status": 0
+    },
+    {
+      "id": "af208cd4-a7f9-40fc-9ec3-2e1aaa6ba931",
+      "customerId": "a891d3a0-1071-7033-1d6a-efbd411555f2",
+      "tableId": "table-kyiv-12",
+      "waiterId": "28f11370-70b1-7059-41a7-c42d4c0e0dbf",
+      "createdByWaiter": false,
+      "startTime": "2026-11-20T18:00:00Z",
+      "endTime": "2026-11-20T21:00:00Z",
+      "guestCount": 2,
       "status": 0
     }
   ],

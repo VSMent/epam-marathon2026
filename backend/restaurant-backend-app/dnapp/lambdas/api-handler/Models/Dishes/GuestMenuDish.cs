@@ -28,5 +28,7 @@ public class GuestMenuDish
 
     public required DishState State { get; set; }
 
+    public bool IsAlcohol { get; set; }
+
     public bool Selectable => State == DishState.Available;
 }

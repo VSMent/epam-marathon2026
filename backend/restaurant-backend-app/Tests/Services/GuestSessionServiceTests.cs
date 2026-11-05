@@ -134,7 +134,7 @@ public class GuestSessionServiceTests
         _mockGroupReservationRepository.Setup(r => r.GetGroupReservationByIdAsync(groupReservation.GroupReservationId)).ReturnsAsync(groupReservation);
         _mockReservationRepository.Setup(r => r.GetReservationByIdAsync(parentReservation.Id)).ReturnsAsync(parentReservation);
         _mockTableRepository.Setup(r => r.GetTableAsync(table.Id)).ReturnsAsync(table);
-        _mockDishRepository.Setup(r => r.GetDishesByLocationIdAsync(table.LocationId)).ReturnsAsync([dish]);
+        _mockDishRepository.Setup(r => r.GetDishByIdAsync(dish.Id)).ReturnsAsync(dish);
 
         await _guestSessionService.AddDishAsync(guestSession.Id, dish.Id, quantityToAdd);
 
@@ -164,7 +164,7 @@ public class GuestSessionServiceTests
         _mockGroupReservationRepository.Setup(r => r.GetGroupReservationByIdAsync(groupReservation.GroupReservationId)).ReturnsAsync(groupReservation);
         _mockReservationRepository.Setup(r => r.GetReservationByIdAsync(parentReservation.Id)).ReturnsAsync(parentReservation);
         _mockTableRepository.Setup(r => r.GetTableAsync(table.Id)).ReturnsAsync(table);
-        _mockDishRepository.Setup(r => r.GetDishesByLocationIdAsync(table.LocationId)).ReturnsAsync([dish]);
+        _mockDishRepository.Setup(r => r.GetDishByIdAsync(dish.Id)).ReturnsAsync(dish);
 
         await _guestSessionService.AddDishAsync(guestSession.Id, dish.Id, quantityToAdd);
 
@@ -221,7 +221,7 @@ public class GuestSessionServiceTests
         _mockReservationRepository.Setup(r => r.GetReservationByIdAsync(parentReservation.Id)).ReturnsAsync(parentReservation);
         _mockTableRepository.Setup(r => r.GetTableAsync(table.Id)).ReturnsAsync(table);
 
-        _mockDishRepository.Setup(r => r.GetDishesByLocationIdAsync(table.LocationId)).ReturnsAsync([]);
+        _mockDishRepository.Setup(r => r.GetDishByIdAsync(dishId)).ReturnsAsync((Dish?)null);
 
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             _guestSessionService.AddDishAsync(guestSession.Id, dishId, quantity: 2));
@@ -241,7 +241,7 @@ public class GuestSessionServiceTests
         _mockGroupReservationRepository.Setup(r => r.GetGroupReservationByIdAsync(groupReservation.GroupReservationId)).ReturnsAsync(groupReservation);
         _mockReservationRepository.Setup(r => r.GetReservationByIdAsync(parentReservation.Id)).ReturnsAsync(parentReservation);
         _mockTableRepository.Setup(r => r.GetTableAsync(table.Id)).ReturnsAsync(table);
-        _mockDishRepository.Setup(r => r.GetDishesByLocationIdAsync(table.LocationId)).ReturnsAsync([dish]);
+        _mockDishRepository.Setup(r => r.GetDishByIdAsync(dish.Id)).ReturnsAsync(dish);
 
         var exception = await Assert.ThrowsAsync<DishIsNotAvailableException>(() =>
             _guestSessionService.AddDishAsync(guestSession.Id, dish.Id, quantity: 2));

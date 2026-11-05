@@ -49,6 +49,13 @@ public class DishRepository : IDishRepository
         return batchGet.Results;
     }
 
+    public async Task<IEnumerable<Dish>> GetAllDishesAsync()
+    {
+        return await _dynamoDbContext
+            .ScanAsync<Dish>(new List<ScanCondition>(), DynamoConfig.ScanConfig(DishTableName))
+            .GetRemainingAsync();
+    }
+
     public async Task<IEnumerable<Dish>> GetDishesByLocationIdAsync(string locationId)
     {
         var resultDishes = new Dictionary<string, Dish>();

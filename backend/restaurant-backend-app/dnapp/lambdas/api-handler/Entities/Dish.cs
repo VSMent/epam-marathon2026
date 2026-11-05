@@ -48,4 +48,9 @@ public class Dish
 
     [DynamoDBProperty("locationId")]
     public string LocationId { get; set; }
+
+    // Alcohol flag (stored as "isAlcoholic", same as data/initial-seed-data.json) drives the
+    // group pre-order alcohol warnings. Missing attribute = false.
+    [DynamoDBProperty("isAlcoholic")]
+    public bool IsAlcohol { get; set; }
 }

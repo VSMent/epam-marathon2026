@@ -67,6 +67,7 @@ public class DishMapper
                 ? null
                 : dish.ImageUrl,
             State = FormatDishState(dish.State),
+            IsAlcohol = dish.IsAlcohol,
         };
     }
 

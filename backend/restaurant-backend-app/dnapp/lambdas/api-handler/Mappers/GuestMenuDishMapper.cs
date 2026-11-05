@@ -21,6 +21,7 @@ public static class GuestMenuDishMapper
         Vitamins = dish.Vitamins,
         ImageUrl = dish.ImageUrl,
         State = dish.State,
+        IsAlcohol = dish.IsAlcohol,
     };
 
     public static IEnumerable<GuestMenuDish> Map(IEnumerable<Dish> dishes) => dishes.Select(Map).ToArray();

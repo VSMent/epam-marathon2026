@@ -8,6 +8,7 @@ using APIHandler.Exceptions;
 using APIHandler.Helpers;
 using APIHandler.Models.Reservations;
 using APIHandler.Models.Users;
+using APIHandler.Services.Orders;
 using APIHandler.Services.Reservations;
 using APIHandler.Services.Waiters;
 using System;
@@ -21,11 +22,13 @@ public class CancelReservationHandler : IApiRequestHandler
 {
     private readonly IWaiterService _waiterService;
     private readonly IReservationService _reservationService;
+    private readonly IOrderService _orderService;
 
-    public CancelReservationHandler(IWaiterService waiterService, IReservationService reservationService)
+    public CancelReservationHandler(IWaiterService waiterService, IReservationService reservationService, IOrderService orderService)
     {
         _waiterService = waiterService ?? throw new ArgumentNullException(nameof(waiterService));
         _reservationService = reservationService ?? throw new ArgumentNullException(nameof(reservationService));
+        _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
     }
 
     public async Task<APIGatewayProxyResponse> HandleRequest(APIGatewayProxyRequest request, ILambdaContext context)
@@ -60,6 +63,9 @@ public class CancelReservationHandler : IApiRequestHandler
 
             reservation.Status = ReservationStatus.Cancelled;
             await _reservationService.UpdateReservationAsync(reservation);
+
+            // The pre-order belongs to the cancelled reservation, so it must not stay submitted.
+            await _orderService.CancelActiveOrderForReservationAsync(reservation.Id);
 
             var waiter = await _waiterService.FindWaiterByReservationIdAsync(reservation.Id);
             if (waiter != null)

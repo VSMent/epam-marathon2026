@@ -135,11 +135,11 @@ public class GetReservationsForUserHandler : IApiRequestHandler
             var reservationOrder = await _orderService.GetOrderByReservationIdAsync(reservation.Id);
 
             bool guestInviteLinkAvailable = false;
-            if (reservation.GuestCount > 1 && reservation.Status != ReservationStatus.Completed)
+            if (reservation.GuestCount > 1 && reservation.Status == ReservationStatus.Reserved)
             {
                 GroupReservation? groupReservation = await _groupReservationRepository.GetByReservationIdAsync(reservation.Id);
-                if (groupReservation is not null)
-                    guestInviteLinkAvailable = groupReservation.Status == GroupReservationStatus.Open;
+                // No group record yet means nobody has submitted; the invite token creates it on demand.
+                guestInviteLinkAvailable = groupReservation is null || groupReservation.Status == GroupReservationStatus.Open;
             }
 
             return ReservationMapper.ToReservationResponse(reservation, location.Address, reservationOrder, guestInviteLinkAvailable: guestInviteLinkAvailable);

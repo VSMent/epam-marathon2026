@@ -41,6 +41,27 @@ public class GroupReservationService(
         if (joinedGuestsCount + 1 >= reservation.GuestCount)
             throw new GuestLimitExceededException();
 
+        return await BuildInviteResponseAsync(groupReservation, reservation);
+    }
+
+    public async Task<GetGroupReservationResponse> GetOwnerGroupReservationAsync(string reservationId, string callerUserId)
+    {
+        Reservation reservation = await reservationRepository.GetReservationByIdAsync(reservationId)
+            ?? throw new ReservationNotFoundException($"Reservation {reservationId} was not found.");
+
+        if (!string.Equals(reservation.CustomerId, callerUserId, StringComparison.OrdinalIgnoreCase))
+            throw new ActionForbiddenException("Only the reservation owner can view this group reservation.");
+
+        GroupReservation groupReservation = await groupReservationRepository.GetByReservationIdAsync(reservationId)
+            ?? throw new GroupReservationNotFoundException();
+
+        // The capacity limit only applies to people joining through the invite link.
+        // The owner is already part of the group, so they can always open it.
+        return await BuildInviteResponseAsync(groupReservation, reservation);
+    }
+
+    private async Task<GetGroupReservationResponse> BuildInviteResponseAsync(GroupReservation groupReservation, Reservation reservation)
+    {
         Table table = await tableRepository.GetTableAsync(reservation.TableId)
             ?? throw new InvalidOperationException("Associated table not found.");
 
@@ -132,7 +153,9 @@ public class GroupReservationService(
         if (reservation.Status != ReservationStatus.Reserved)
             throw new GroupReservationExpiredException("The group reservation is expired.");
 
-        GroupReservation groupReservation = (await groupReservationRepository.GetByReservationIdAsync(reservationId))!;
+        // The group record is created lazily: a 2+ guest reservation may not have one yet.
+        GroupReservation groupReservation = await groupReservationRepository.GetByReservationIdAsync(reservationId)
+            ?? await CreateGroupReservationAsync(reservationId);
 
         if (groupReservation.Status == GroupReservationStatus.Submitted)
             throw new GroupReservationSubmittedException();

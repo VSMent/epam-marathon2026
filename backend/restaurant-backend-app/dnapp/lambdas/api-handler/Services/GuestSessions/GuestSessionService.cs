@@ -88,8 +88,8 @@ public class GuestSessionService(
 
         await ValidateGroupReservationId(session.GroupReservationId);
 
-        string locationId = await GetLocationIdForGroupAsync(session.GroupReservationId);
-        var dishes = await dishRepository.GetDishesByLocationIdAsync(locationId);
+        // Guests see the same full menu as the reservation owner (the regular /dishes list).
+        var dishes = await dishRepository.GetAllDishesAsync();
 
         var dishesMapped = dishes
             .GroupBy(d => d.DishType)
@@ -105,11 +105,8 @@ public class GuestSessionService(
 
         GuestSession session = await GetGuestSessionAsync(guestSessionId);
 
-        string locationId = await GetLocationIdForGroupAsync(session.GroupReservationId);
-        var locationDishes = await dishRepository.GetDishesByLocationIdAsync(locationId);
-
-        var dish = locationDishes.FirstOrDefault(d => d.Id == dishId)
-            ?? throw new ValidationException($"Dish '{dishId}' does not exist or is not available at this location.");
+        var dish = await dishRepository.GetDishByIdAsync(dishId)
+            ?? throw new ValidationException($"Dish '{dishId}' does not exist.");
 
         if (dish.State != DishState.Available)
             throw new DishIsNotAvailableException($"Dish '{dishId}' is currently unavailable. State: '{dish.State}'.");

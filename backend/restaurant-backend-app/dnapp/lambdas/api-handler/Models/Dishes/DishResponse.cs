@@ -42,4 +42,7 @@ public class DishResponse
 
     [JsonPropertyName("state")]
     public required string State { get; set; }
+
+    [JsonPropertyName("isAlcohol")]
+    public bool IsAlcohol { get; set; }
 }
