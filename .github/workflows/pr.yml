@@ -77,3 +77,8 @@
                 - name: Deploy to S3
                   if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
                   run: aws s3 sync dist/restaurant-frontend-app/browser s3://${{ vars.S3_BUCKET }}/ --delete
+
+                # Without this, CloudFront keeps serving the previous build from its edge cache after the sync.
+                - name: Invalidate CloudFront cache
+                  if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+                  run: aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"

@@ -3,9 +3,9 @@
   <p class="status-message">Loading...</p>
   }
 
-  @else if (error(); as err) {
+  @else if (error()) {
   <section class="page group-order-page error-page">
-    @if (err.status === 404) {
+    @if (error()?.status === 404) {
     <h2>Group reservation not found</h2>
     } @else {
     <h2>Failed to load group reservation</h2>
@@ -14,7 +14,7 @@
   </section>
   }
 
-  @else if (invite(); as inv) {
+  @else if (invite()) {
   <section class="page group-order-page">
 
     <div class="header-row">
@@ -30,9 +30,9 @@
         <span class="sync-status sync-status--error">
           Couldn't refresh. Showing data from {{ lastUpdatedAt() | date: 'HH:mm:ss' }}
         </span>
-        } @else if (lastUpdatedAt(); as updated) {
+        } @else if (lastUpdatedAt()) {
         <span class="sync-status">
-          Updated at {{ updated | date: 'HH:mm:ss' }}
+          Updated at {{ lastUpdatedAt() | date: 'HH:mm:ss' }}
         </span>
         }
         <button type="button" class="button button--secondary refresh-btn" (click)="refresh()">
@@ -44,19 +44,19 @@
     <div class="reservation-meta">
       <span class="meta-item">
         <img class="line-icon" src="assets/svg/location-green.svg" alt="" aria-hidden="true" />
-        {{ inv.LocationAddress }}
+        {{ invite()?.LocationAddress }}
       </span>
       <span class="meta-item">
         <img class="line-icon" src="assets/svg/calendar-green.svg" alt="" aria-hidden="true" />
-        {{ inv.StartTime | date: 'mediumDate' }}
+        {{ invite()?.StartTime | date: 'mediumDate' }}
       </span>
       <span class="meta-item">
         <img class="line-icon" src="assets/svg/clock-green.svg" alt="" aria-hidden="true" />
-        {{ inv.StartTime | date: 'HH:mm' }}–{{ inv.EndTime | date: 'HH:mm' }}
+        {{ invite()?.StartTime | date: 'HH:mm' }}–{{ invite()?.EndTime | date: 'HH:mm' }}
       </span>
       <span class="meta-item">
         <img class="line-icon" src="assets/svg/people-green.svg" alt="" aria-hidden="true" />
-        {{ participants().length }} of {{ inv.MaxGuestCount }} guests
+        {{ participants().length }} of {{ invite()?.MaxGuestCount }} guests
       </span>
     </div>
 
