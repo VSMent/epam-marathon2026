@@ -1,3 +1,47 @@
+# EPAM Marathon 2026 — Restaurant (Green & Tasty)
+
+Full-stack restaurant booking and **group pre-order** app for the EPAM IT Marathon: Angular frontend, .NET 8 serverless backend on AWS, Terraform infra, Reqnroll/Playwright AQA, and Manual QA artifacts.
+
+Default branch: **`master`**. Live stack is meant to sit in **AWS `us-west-2`** (API Gateway + Lambdas + DynamoDB + Cognito + S3/CloudFront).
+
+## Current features
+
+| Area | What works |
+| :--- | :--- |
+| **Core restaurant** | Locations, menu/dishes, reservations, auth (Cognito), waiter/customer flows from the base marathon app |
+| **Group pre-order (owner)** | Owner group-order screen: per-guest carts & totals, consolidated submit, live refresh (~15s), remove guest + confirm dialog |
+| **Group pre-order (HW1 US1–US3)** | Bulk/upsell suggestions, alcohol filter & logistics prompt, empty-guest warnings + reminder UX |
+| **Backend APIs** | Guest sessions, group reservation sessions list/submit/remove, seedable DynamoDB data, Postman collection |
+| **Frontend** | Angular 18+ with Signals; HW6 Levels 1–3 + bonus done (mock API for L1–L2, real API for L3) |
+| **Branding** | Ukrainian Steak & Wine hero / menu branding on main surfaces |
+
+## Project state (homework tracker)
+
+| HW | Focus | Status |
+| :--- | :--- | :--- |
+| **#1** | US1 / US2 / US3 group pre-order UX | Done (committed) |
+| **#5** | Backend group pre-order (owner) | Done for committed levels; extra handlers/WIP may still be local |
+| **#6** | Frontend owner group-order screen | Done — L1, L2, L3 + bonus |
+| **#7** | Manual QA | Done — report, cases, bugs under [`manual-qa/`](./manual-qa/) (local until committed) |
+| **#8** | Test automation (AQA) | Framework in repo; group pre-order scenarios / CI secrets still being wired |
+
+**CI/CD:** GitHub Actions under [`.github/workflows/`](./.github/workflows/) — frontend PR checks + S3 deploy, Syndicate backend deploy, Terraform plan/apply, AQA quality gate, nightly/manual AQA tests. Workflows listen on `master` and `main`. Deploy/AQA need repo **Actions secrets & variables** (and AWS OIDC roles for deploy). See [`aqa/restaurant-aqa-framework/README.md`](./aqa/restaurant-aqa-framework/README.md) for AQA setup.
+
+**Layout**
+
+| Path | Role |
+| :--- | :--- |
+| `frontend/restaurant-frontend-app/` | Angular UI |
+| `backend/restaurant-backend-app/` | .NET Lambdas + Syndicate |
+| `infra/terraform/` | Shared AWS infra |
+| `aqa/restaurant-aqa-framework/` | Reqnroll + TUnit + Playwright E2E |
+| `manual-qa/` | HW7 analysis, test cases, bug reports |
+| `docs/`, `postman/`, `data/`, `scripts/` | Contracts, Postman, seed data |
+
+Progress notes also live in [`TODO.md`](./TODO.md).
+
+---
+
 # Deployment Guide
 
 This repo uses three deployment tracks:

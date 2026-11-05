@@ -4,12 +4,14 @@
         pull_request:
           branches:
             - main
+            - master
           paths:
             - "frontend/restaurant-frontend-app/**"
 
         push:
           branches: 
             - main
+            - master
           paths:
             - 'frontend/restaurant-frontend-app/**'
         workflow_dispatch:
@@ -66,12 +68,12 @@
                      BACKEND_URL: ${{ vars.BACKEND_URL }}
                 
                 - name: Configure AWS credentials
-                  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+                  if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
                   uses: aws-actions/configure-aws-credentials@v4
                   with:
                     role-to-assume: ${{ secrets.AWS_DEPLOY_S3_ROLE }}
                     aws-region: ${{ vars.AWS_REGION }}
 
                 - name: Deploy to S3
-                  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+                  if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
                   run: aws s3 sync dist/restaurant-frontend-app/browser s3://${{ vars.S3_BUCKET }}/ --delete
