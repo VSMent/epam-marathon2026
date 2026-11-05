@@ -36,4 +36,25 @@ describe('CardReservationComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('copy invite link button', () => {
+    const findCopyButton = (): HTMLButtonElement | undefined =>
+      Array.from<HTMLButtonElement>(fixture.nativeElement.querySelectorAll('button')).find((button) =>
+        button.textContent?.includes('Copy invite link'),
+      );
+
+    it('is shown while the group pre-order is open', () => {
+      fixture.componentRef.setInput('r', { ...RESERVATION, guestInviteLinkAvailable: true });
+      fixture.detectChanges();
+
+      expect(findCopyButton()).toBeTruthy();
+    });
+
+    it('is hidden once the group pre-order is submitted', () => {
+      fixture.componentRef.setInput('r', { ...RESERVATION, guestInviteLinkAvailable: false });
+      fixture.detectChanges();
+
+      expect(findCopyButton()).toBeUndefined();
+    });
+  });
 });

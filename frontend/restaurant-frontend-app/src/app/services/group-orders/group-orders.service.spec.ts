@@ -22,12 +22,11 @@ describe('Рівень 2 · GroupOrdersService', () => {
 
   afterEach(() => http.verify());
 
-  it('getGroupInvite$: reservationId → invite-token → invite', () => {
+  it('getGroupInvite$: GET /reservations/{id}/group-invite', () => {
     let groupId = '';
     service.getGroupInvite$('res-1').subscribe((invite) => (groupId = invite.GroupReservationId));
 
-    http.expectOne(`${BASE_URL}/reservations/res-1/invite-token`).flush({ token: 'tok' });
-    http.expectOne(`${BASE_URL}/guest/invites/tok`).flush({ GroupReservationId: 'grp-1' });
+    http.expectOne(`${BASE_URL}/reservations/res-1/group-invite`).flush({ GroupReservationId: 'grp-1' });
 
     expect(groupId).toBe('grp-1');
   });
@@ -37,6 +36,23 @@ describe('Рівень 2 · GroupOrdersService', () => {
     const req = http.expectOne(`${BASE_URL}/guest/groups/grp-1/sessions`);
     expect(req.request.method).toBe('GET');
     req.flush({ participants: [], total: 0 });
+  });
+
+  it('getSessions$: maps the API PascalCase participants to the UI model', () => {
+    let result: { id: string; name: string; isSubmitted: boolean; total: number }[] = [];
+    service.getSessions$('grp-1').subscribe((res) => (result = res.participants));
+    const req = http.expectOne(`${BASE_URL}/guest/groups/grp-1/sessions`);
+    req.flush({
+      Participants: [
+        { Id: 'session-owner-1', Type: 'Owner', Name: 'Demo', Items: [], Total: 0, IsSubmitted: false },
+      ],
+      Total: 0,
+    });
+    expect(result.length).toBe(1);
+    expect(result[0].id).toBe('session-owner-1');
+    expect(result[0].name).toBe('Demo');
+    expect(result[0].isSubmitted).toBeFalse();
+    expect(result[0].total).toBe(0);
   });
 
   it('getOwnerSessionId$: повертає рядок guestSessionId', () => {

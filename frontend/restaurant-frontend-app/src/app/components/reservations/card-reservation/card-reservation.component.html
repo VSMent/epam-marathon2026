@@ -197,6 +197,24 @@
     }
 
     @if (role() === Roles.CUSTOMER) {
+      @if (canOpenGroupOrder()) {
+        <a
+          class="button button--secondary button--large"
+          [routerLink]="['/reservations', r().id, 'group-order']"
+        >
+          View group pre-order
+        </a>
+      }
+      @if (canCopyInviteLink()) {
+        <button
+          type="button"
+          class="button button--secondary button--large"
+          (click)="copyInviteLink()"
+        >
+          Copy invite link
+        </button>
+      }
+
       @if (
         r().status !==
         ReservationStatusCustomer.Reserved &&

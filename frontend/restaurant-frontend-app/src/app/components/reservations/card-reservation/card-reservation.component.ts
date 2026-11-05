@@ -1,4 +1,5 @@
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +9,8 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { Params, Router } from '@angular/router';
+import { Params, Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 
 import { CreateOrderRequest } from '@app/models/cart/create-order-request.model';
 import {
@@ -17,7 +19,10 @@ import {
 } from '@app/models/reservations/reservation.model';
 import { PlaceOrderWaiterComponent } from '@app/components/place-order-waiter/place-order-waiter.component';
 import { Roles } from '@app/shared/constants/roles';
+import { GuestInviteService } from '@app/services/reservation/guest-invite.service';
+import { ToastService } from '@app/services/toast/toast.service';
 import { CustomSelectComponent } from '@app/shared/custom-components/custom-select/custom-select.component';
+import { getServerErrorMessage } from '@app/shared/helpers/http-error-helpers';
 
 interface ReservationStatusView {
   class: string;
@@ -38,6 +43,7 @@ interface WaiterPreOrderNavigationData {
     DatePipe,
     CustomSelectComponent,
     PlaceOrderWaiterComponent,
+    RouterLink,
   ],
   templateUrl: './card-reservation.component.html',
   styleUrl: './card-reservation.component.scss',
@@ -45,6 +51,8 @@ interface WaiterPreOrderNavigationData {
 })
 export class CardReservationComponent {
   private readonly router = inject(Router);
+  private readonly guestInviteService = inject(GuestInviteService);
+  private readonly toast = inject(ToastService);
   readonly Roles = Roles;
   readonly ReservationStatusCustomer = ReservationStatusCustomer;
 
@@ -134,6 +142,48 @@ export class CardReservationComponent {
       this.preOrderItemCount() > 0 ||
       this.creatorRole() === Roles.WAITER
     );
+  });
+
+  // The group pre-order page only exists for group reservations (2+ guests).
+  // Owner-only: fetches the group invite token and copies the join link to the clipboard.
+  // The clipboard write must start inside the click; a write issued after the HTTP call is
+  // rejected by the browser. ClipboardItem accepts a promise, so the write stays in the gesture.
+  copyInviteLink(): void {
+    // The clipboard rejects the promise without the original error, so keep the HTTP error aside
+    // to show the real reason (e.g. the group pre-order was already submitted).
+    let inviteError: unknown;
+
+    const linkBlob = firstValueFrom(this.guestInviteService.getInviteToken$(this.r().id))
+      .then(({ token }) => new Blob([`${window.location.origin}/join/${token}`], { type: 'text/plain' }))
+      .catch((error: unknown) => {
+        inviteError = error;
+        throw error;
+      });
+
+    navigator.clipboard
+      .write([new ClipboardItem({ 'text/plain': linkBlob })])
+      .then(() => this.toast.success('Share it with your friends.', 'Link copied!'))
+      .catch(() => this.toast.error(this.copyInviteErrorMessage(inviteError)));
+  }
+
+  private copyInviteErrorMessage(error: unknown): string {
+    const serverMessage = error instanceof HttpErrorResponse ? getServerErrorMessage(error) : '';
+
+    return serverMessage
+      ? `Could not copy the link: ${serverMessage}`
+      : 'Could not copy the link. Please try again later.';
+  }
+
+  readonly canOpenGroupOrder = computed(() => {
+    return (
+      this.r().guestCount >= 2 &&
+      this.r().status !== ReservationStatusCustomer.Cancelled
+    );
+  });
+
+  // The invite link stops working once the group pre-order is submitted (backend decides).
+  readonly canCopyInviteLink = computed(() => {
+    return this.canOpenGroupOrder() && this.r().guestInviteLinkAvailable === true;
   });
 
   readonly isAnonymous = computed(() => {

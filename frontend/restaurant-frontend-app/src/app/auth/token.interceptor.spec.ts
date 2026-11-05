@@ -60,4 +60,26 @@ describe('tokenInterceptor', () => {
     expect(toastService.error).not.toHaveBeenCalled();
     expect(receivedStatus).toBe(400);
   });
+
+  it('adds the logged-in ID token to /guest/groups requests', () => {
+    const authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
+    authService.getTokens.and.returnValue({ idToken: 'owner-id-token', accessToken: 'a' } as never);
+
+    http.get('https://test.api/guest/groups/grp-1/sessions').subscribe();
+
+    const req = httpMock.expectOne('https://test.api/guest/groups/grp-1/sessions');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer owner-id-token');
+    req.flush({});
+  });
+
+  it('does not add a token to other guest requests', () => {
+    const authService = TestBed.inject(AuthenticationService) as jasmine.SpyObj<AuthenticationService>;
+    authService.getTokens.and.returnValue({ idToken: 'owner-id-token', accessToken: 'a' } as never);
+
+    http.post('https://test.api/guest/sessions', {}).subscribe();
+
+    const req = httpMock.expectOne('https://test.api/guest/sessions');
+    expect(req.request.headers.has('Authorization')).toBeFalse();
+    req.flush({});
+  });
 });

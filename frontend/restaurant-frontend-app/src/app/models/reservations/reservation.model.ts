@@ -42,6 +42,8 @@ export interface ReservationCustomer {
   hasSubmittedPreOrder?: boolean;
   preOrder?: Order;
   preOrders?: Order[];
+  // False once the group pre-order is submitted: the invite link no longer works.
+  guestInviteLinkAvailable?: boolean;
   createdByName?: string;
   createdByRole?: 'Customer' | 'Waiter';
 }

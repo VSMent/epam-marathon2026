@@ -16,12 +16,22 @@ export const tokenInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ) => {
   const toastr = inject(ToastService);
+  const authService = inject(AuthenticationService);
 
   // IMPORTANT: do not modify Guest endpoints at all.
   // Guest flow uses a different token (guest session token) and we must not touch the body.
   // Otherwise we break POST /guest/sessions payload.
   if (req.url.includes('/guest/')) {
-    return next(req).pipe(
+    // Exception: group pre-order endpoints (/guest/groups/...) are protected by the Cognito
+    // authorizer on the API. A logged-in owner must send their ID token, otherwise the call fails.
+    // Only the header is added; the body and any header already set by the caller are untouched.
+    const groupTokens = authService.getTokens();
+    const guestReq =
+      req.url.includes('/guest/groups/') && !req.headers.has('Authorization') && groupTokens?.idToken
+        ? req.clone({ setHeaders: { Authorization: 'Bearer ' + groupTokens.idToken } })
+        : req;
+
+    return next(guestReq).pipe(
       catchError((error: HttpErrorResponse) => {
         console.log(error);
 
@@ -67,7 +77,6 @@ export const tokenInterceptor: HttpInterceptorFn = (
     );
   }
 
-  const authService = inject(AuthenticationService);
   const tokens = authService.getTokens();
 
   const clonedRequest =
