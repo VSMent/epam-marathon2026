@@ -66,6 +66,17 @@ jobs:
       - name: Install AWS Syndicate
         run: pip install aws-syndicate
 
+      # syndicate.yml is checked in with a local absolute project_path (Windows or otherwise).
+      # On the runner that path does not exist, so rewrite it to this checkout before build/update.
+      - name: Point syndicate at this checkout
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          project_path="$(pwd)"
+          sed -i "s|^project_path:.*|project_path: \"${project_path}\"|" \
+            .syndicate-config-restaurant-backend-app/syndicate.yml
+          echo "project_path set to ${project_path}"
+          grep '^project_path:' .syndicate-config-restaurant-backend-app/syndicate.yml
+
       - name: Syndicate build
         working-directory: ${{ env.APP_DIR }}
         env:
