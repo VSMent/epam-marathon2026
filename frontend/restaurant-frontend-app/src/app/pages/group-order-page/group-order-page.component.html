@@ -1,36 +1,104 @@
 <main>
+  @if (isLoading()) {
+  <p class="status-message">Loading...</p>
+  }
+
+  @else if (error(); as err) {
+  <section class="page group-order-page error-page">
+    @if (err.status === 404) {
+    <h2>Group reservation not found</h2>
+    } @else {
+    <h2>Failed to load group reservation</h2>
+    <button type="button" class="button button--primary" (click)="loadData()">Try again</button>
+    }
+  </section>
+  }
+
+  @else if (invite(); as inv) {
   <section class="page group-order-page">
-    <h1>Group Pre-Order</h1>
-    <div class="reservation-meta">
-      <span class="meta-item">
-        <img class="line-icon" src="assets/svg/location-green.svg" alt="" aria-hidden="true" />
-        {{ invite().LocationAddress }}
-      </span>
-      <span class="meta-item">
-        <img class="line-icon" src="assets/svg/calendar-green.svg" alt="" aria-hidden="true" />
-        {{ invite().StartTime | date: 'mediumDate' }}
-      </span>
-      <span class="meta-item">
-        <img class="line-icon" src="assets/svg/clock-green.svg" alt="" aria-hidden="true" />
-        {{ invite().StartTime | date: 'HH:mm' }}–{{ invite().EndTime | date: 'HH:mm' }}
-      </span>
-      <span class="meta-item">
-        <img class="line-icon" src="assets/svg/people-green.svg" alt="" aria-hidden="true" />
-        {{ participants().length }} of {{ invite().MaxGuestCount }} guests
+
+    <div class="header-row">
+      <h1>Group Pre-Order</h1>
+      <span class="status-badge" [class.submitted]="groupStatus() === 'Submitted'">
+        {{ groupStatus() === 'Submitted' ? 'Sent to Restaurant' : 'Collecting pre-orders' }}
       </span>
     </div>
 
+    <div class="reservation-meta">
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/location-green.svg" alt="" aria-hidden="true" />
+        {{ inv.LocationAddress }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/calendar-green.svg" alt="" aria-hidden="true" />
+        {{ inv.StartTime | date: 'mediumDate' }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/clock-green.svg" alt="" aria-hidden="true" />
+        {{ inv.StartTime | date: 'HH:mm' }}–{{ inv.EndTime | date: 'HH:mm' }}
+      </span>
+      <span class="meta-item">
+        <img class="line-icon" src="assets/svg/people-green.svg" alt="" aria-hidden="true" />
+        {{ participants().length }} of {{ inv.MaxGuestCount }} guests
+      </span>
+    </div>
+
+    @if (groupStatus() !== 'Submitted' && unsubmittedCount() > 0) {
+    <div class="warning-banner">
+      {{ unsubmittedCount() }} participant{{ unsubmittedCount() > 1 ? 's' : '' }} hasn't submitted their cart yet —
+      their dishes won't be included in the order.
+    </div>
+    }
+
+    @if (!hasAnyDishes()) {
+    <p class="empty-notice">Participants haven’t added any dishes yet</p>
+    }
+
     <ul class="participants">
       @for (person of participants(); track person.id) {
-      <li><app-participant-card [participant]="person" /></li>
+      <li>
+        <app-participant-card [participant]="person" [isMe]="person.id === ownerSessionId()" />
+      </li>
       }
     </ul>
 
+    @if (consolidatedOrder().items.length > 0) {
+    <div class="consolidated-section">
+      <h3>Consolidated pre-order</h3>
+      <ul class="consolidated-list">
+        @for (cItem of consolidatedOrder().items; track cItem.dish.id) {
+        <li>{{ cItem.dish.name }} × {{ cItem.quantity }}</li>
+        }
+      </ul>
+    </div>
+    }
+
     <footer>
-      <h2>Grand Total:<span>{{total() | currency}}</span></h2>
-      <button type="button" class="button button--primary button--large">
+      <h2>Grand Total: <span>{{ total() | currency }}</span></h2>
+
+      @if (groupStatus() !== 'Submitted') {
+      <button type="button" class="button button--primary button--large" [disabled]="!canSubmit()"
+        (click)="openModal()">
         Submit Pre-Order
       </button>
+      }
     </footer>
   </section>
+  }
+
+  @if (isModalOpen()) {
+  <app-modal [title]="'Submit Pre-Order?'" [width]="'520px'" (closed)="closeModal()">
+    <p class="dialog-description">
+      Only submitted carts will be sent to the restaurant. This cannot be undone.
+    </p>
+    <div modal-actions class="dialog-actions">
+      <button type="button" class="button button--tertiary dialog-cancel-btn" (click)="closeModal()" [disabled]="isSubmitting()">
+        Cancel
+      </button>
+      <button type="button" class="button button--primary dialog-submit-btn" (click)="confirmSubmit()" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Submitting…' : 'Submit' }}
+      </button>
+    </div>
+  </app-modal>
+  }
 </main>
