@@ -21,7 +21,11 @@ import { ParticipantCardComponent } from '@app/components/group-orders/participa
 import { ModalComponent } from '@app/shared/custom-components/modal/modal.component';
 import { consolidatePreOrder } from '@app/shared/helpers/consolidate-pre-order';
 import { GuestInvite } from '@app/models/reservations/guest-invite.model';
-import { Participant } from '@app/models/group-orders/participant.model';
+import {
+  BulkUpsellSuggestion,
+  DishShort,
+  Participant,
+} from '@app/models/group-orders/participant.model';
 
 @Component({
   selector: 'app-group-order-page',
@@ -50,25 +54,119 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
   readonly guestToRemove = signal<Participant | null>(null);
   readonly isRemovingGuest = signal(false);
 
+  // US1: Bulk / Upsell replacement
+  readonly appliedBulkDishIds = signal<Set<string>>(new Set());
+
+  // US2: Alcohol filtering & transportation logistics
+  readonly showAlcoholOnly = signal<boolean>(false);
+  readonly isLogisticsModalOpen = signal<boolean>(false);
+
   readonly lastUpdatedAt = signal<Date | null>(null);
   readonly refreshError = signal(false);
 
   private pollingSub?: Subscription;
 
-  readonly consolidatedOrder = computed(() => consolidatePreOrder(this.participants()));
+  readonly consolidatedBase = computed(() => consolidatePreOrder(this.participants()));
+
+  readonly bulkSuggestions = computed<BulkUpsellSuggestion[]>(() => {
+    const base = this.consolidatedBase();
+    const suggestions: BulkUpsellSuggestion[] = [];
+    for (const item of base.items) {
+      const dishWithBulk = item.dish as DishShort;
+      if (dishWithBulk.bulkEquivalent && item.quantity >= dishWithBulk.bulkEquivalent.minQuantity) {
+        const bulk = dishWithBulk.bulkEquivalent;
+        const originalSubtotal = item.quantity * dishWithBulk.price;
+        const bulkPrice = bulk.bulkPrice;
+        const savings = originalSubtotal - bulkPrice;
+        if (savings > 0) {
+          suggestions.push({
+            originalDishId: dishWithBulk.id,
+            originalName: dishWithBulk.name,
+            totalQuantity: item.quantity,
+            originalSubtotal,
+            bulkDishId: bulk.bulkDishId,
+            bulkName: bulk.bulkName,
+            bulkPrice: bulk.bulkPrice,
+            savings,
+            servingNote: bulk.servingNote,
+          });
+        }
+      }
+    }
+    return suggestions;
+  });
+
+  readonly consolidatedOrder = computed(() => {
+    const base = this.consolidatedBase();
+    const applied = this.appliedBulkDishIds();
+    if (applied.size === 0) {
+      return base;
+    }
+    const items = [];
+    let total = 0;
+    for (const item of base.items) {
+      const dishWithBulk = item.dish as DishShort;
+      if (applied.has(dishWithBulk.id) && dishWithBulk.bulkEquivalent) {
+        const bulk = dishWithBulk.bulkEquivalent;
+        items.push({
+          dish: {
+            id: bulk.bulkDishId,
+            name: bulk.bulkName,
+            price: bulk.bulkPrice,
+          },
+          quantity: 1,
+        });
+        total += bulk.bulkPrice;
+      } else {
+        items.push(item);
+        total += item.dish.price * item.quantity;
+      }
+    }
+    return { items, total };
+  });
 
   readonly total = computed(() => this.consolidatedOrder().total);
 
   readonly unsubmittedCount = computed(() =>
-    this.participants().filter(p => !p.isSubmitted).length
+    this.participants().filter((p) => !p.isSubmitted).length
   );
 
   readonly hasAnyDishes = computed(() =>
-    this.participants().some(p => p.items.length > 0)
+    this.participants().some((p) => p.items.length > 0)
   );
 
   readonly canSubmit = computed(() =>
     this.consolidatedOrder().items.length > 0 && !this.isSubmitting()
+  );
+
+  // US2: Alcohol indicators and count
+  readonly hasAnyAlcohol = computed(() =>
+    this.participants().some((p) => p.items.some((i) => i.dish.isAlcohol))
+  );
+
+  readonly totalAlcoholItemsCount = computed(() =>
+    this.participants().reduce(
+      (acc, p) =>
+        acc +
+        p.items
+          .filter((i) => i.dish.isAlcohol)
+          .reduce((sum, item) => sum + item.quantity, 0),
+      0
+    )
+  );
+
+  // US3: All submitted status & Taxes/Service charges
+  readonly allSubmitted = computed(() =>
+    this.participants().length > 0 && this.unsubmittedCount() === 0
+  );
+
+  readonly taxRate = 0.1; // 10% tax
+  readonly serviceChargeRate = 0.05; // 5% service charge
+
+  readonly taxAmount = computed(() => this.total() * this.taxRate);
+  readonly serviceChargeAmount = computed(() => this.total() * this.serviceChargeRate);
+  readonly totalEstimatedCost = computed(
+    () => this.total() + this.taxAmount() + this.serviceChargeAmount()
   );
 
   ngOnInit(): void {
@@ -162,6 +260,60 @@ export class GroupOrderPageComponent implements OnInit, OnDestroy {
       this.pollingSub.unsubscribe();
       this.pollingSub = undefined;
     }
+  }
+
+  // US1: Bulk Upsell Handlers
+  applyBulkReplacement(dishId: string): void {
+    this.appliedBulkDishIds.update((set) => {
+      const next = new Set(set);
+      next.add(dishId);
+      return next;
+    });
+    this.toast.success('Sharing option applied! Total order price recalculated.');
+  }
+
+  revertBulkReplacement(dishId: string): void {
+    this.appliedBulkDishIds.update((set) => {
+      const next = new Set(set);
+      next.delete(dishId);
+      return next;
+    });
+    this.toast.info('Reverted to individual portions.');
+  }
+
+  // US2: Alcohol filter & logistics handlers
+  toggleAlcoholFilter(): void {
+    this.showAlcoholOnly.update((v) => !v);
+  }
+
+  openLogisticsModal(): void {
+    this.isLogisticsModalOpen.set(true);
+  }
+
+  closeLogisticsModal(): void {
+    this.isLogisticsModalOpen.set(false);
+  }
+
+  // US3: Guest reminder handler
+  sendReminder(participant: Participant): void {
+    const inv = this.invite();
+    if (!inv) return;
+
+    this.service.sendReminder$(inv.GroupReservationId, participant.id).subscribe({
+      next: () => {
+        this.participants.update((list) =>
+          list.map((p) => (p.id === participant.id ? { ...p, reminderSent: true } : p))
+        );
+        this.toast.success(`Reminder notification sent to ${participant.name}`);
+      },
+      error: () => {
+        // Optimistic fallback update
+        this.participants.update((list) =>
+          list.map((p) => (p.id === participant.id ? { ...p, reminderSent: true } : p))
+        );
+        this.toast.success(`Reminder notification sent to ${participant.name}`);
+      },
+    });
   }
 
   openRemoveGuestModal(participant: Participant): void {

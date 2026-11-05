@@ -70,4 +70,14 @@ export class GroupOrdersService {
       `${this.baseUrl}/guest/groups/${groupReservationId}/sessions/${guestSessionId}`
     );
   }
+
+  sendReminder$(
+    groupReservationId: string,
+    guestSessionId: string
+  ): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(
+      `${this.baseUrl}/guest/groups/${groupReservationId}/sessions/${guestSessionId}/remind`,
+      {}
+    );
+  }
 }

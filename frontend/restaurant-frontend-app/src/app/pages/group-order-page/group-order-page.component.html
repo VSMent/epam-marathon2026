@@ -60,6 +60,78 @@
       </span>
     </div>
 
+    <!-- US2: Alcohol filtering & Transportation Logistics prompt -->
+    @if (hasAnyAlcohol()) {
+    <div class="alcohol-toolbar">
+      <button
+        type="button"
+        class="filter-toggle-btn"
+        [class.active]="showAlcoholOnly()"
+        (click)="toggleAlcoholFilter()"
+      >
+        <span>🍷 Show Alcohol Only</span>
+        <span class="count-badge">{{ totalAlcoholItemsCount() }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="plan-logistics-btn"
+        (click)="openLogisticsModal()"
+      >
+        🚖 Plan Logistics
+      </button>
+    </div>
+    }
+
+    <!-- US1: Upsell / Bulk Suggestion -->
+    @if (bulkSuggestions().length > 0) {
+    <div class="bulk-optimization-card">
+      <div class="bulk-header">
+        <span class="bulk-icon" aria-hidden="true">💡</span>
+        <div class="bulk-title-group">
+          <h4>Bulk & Sharing Optimization</h4>
+          <p>Identical individual portions can be combined to save budget!</p>
+        </div>
+      </div>
+
+      <div class="bulk-suggestions-list">
+        @for (sugg of bulkSuggestions(); track sugg.originalDishId) {
+        <div class="bulk-item-row">
+          <div class="bulk-item-info">
+            <strong>{{ sugg.servingNote }}</strong>
+            <p>
+              Replace {{ sugg.totalQuantity }} × {{ sugg.originalName }} ({{ sugg.originalSubtotal | currency }})
+              with <em>{{ sugg.bulkName }}</em> ({{ sugg.bulkPrice | currency }}).
+              <span class="savings-tag">Save {{ sugg.savings | currency }}</span>
+            </p>
+          </div>
+
+          <div class="bulk-actions">
+            @if (appliedBulkDishIds().has(sugg.originalDishId)) {
+            <span class="applied-badge">✓ Applied</span>
+            <button
+              type="button"
+              class="button button--tertiary revert-btn"
+              (click)="revertBulkReplacement(sugg.originalDishId)"
+            >
+              Revert
+            </button>
+            } @else {
+            <button
+              type="button"
+              class="button button--secondary apply-bulk-btn"
+              (click)="applyBulkReplacement(sugg.originalDishId)"
+            >
+              Apply Sharing Option
+            </button>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
     @if (groupStatus() !== 'Submitted' && unsubmittedCount() > 0) {
     <div class="warning-banner">
       {{ unsubmittedCount() }} participant{{ unsubmittedCount() > 1 ? 's' : '' }} hasn't submitted their cart yet —
@@ -78,7 +150,9 @@
           [participant]="person"
           [isMe]="person.id === ownerSessionId()"
           [canRemove]="groupStatus() !== 'Submitted' && person.type === 'Guest'"
+          [showAlcoholOnly]="showAlcoholOnly()"
           (removeClick)="openRemoveGuestModal($event)"
+          (reminderClick)="sendReminder($event)"
         />
       </li>
       }
@@ -96,7 +170,25 @@
     }
 
     <footer>
+      @if (allSubmitted()) {
+      <div class="cost-breakdown">
+        <div class="cost-row">
+          <span>Items Subtotal:</span>
+          <span>{{ total() | currency }}</span>
+        </div>
+        <div class="cost-row">
+          <span>Estimated Taxes (10%):</span>
+          <span>{{ taxAmount() | currency }}</span>
+        </div>
+        <div class="cost-row">
+          <span>Service Charge (5%):</span>
+          <span>{{ serviceChargeAmount() | currency }}</span>
+        </div>
+        <h2>Grand Total: <span>{{ totalEstimatedCost() | currency }}</span></h2>
+      </div>
+      } @else {
       <h2>Grand Total: <span>{{ total() | currency }}</span></h2>
+      }
 
       @if (groupStatus() !== 'Submitted') {
       <button type="button" class="button button--primary button--large" [disabled]="!canSubmit()"
@@ -146,6 +238,75 @@
         [disabled]="isRemovingGuest()"
       >
         {{ isRemovingGuest() ? 'Removing…' : 'Remove Guest' }}
+      </button>
+    </div>
+  </app-modal>
+  }
+
+  <!-- US2: Transportation Logistics Modal -->
+  @if (isLogisticsModalOpen()) {
+  <app-modal [title]="'Plan Transportation Logistics'" [width]="'540px'" (closed)="closeLogisticsModal()">
+    <div class="logistics-dialog-content">
+      <p class="dialog-description">
+        Alcoholic drinks were selected for this group pre-order. Arrange transportation or designate a driver ahead of time to ensure everyone returns safely.
+      </p>
+
+      <div class="destination-preview">
+        <span class="dest-label">Venue Destination:</span>
+        <div class="dest-address">
+          <img src="assets/svg/location-green.svg" alt="" aria-hidden="true" width="16" height="16" />
+          <strong>{{ invite()?.LocationAddress }}</strong>
+        </div>
+      </div>
+
+      <div class="rideshare-partners">
+        <h5>Ride-Sharing & Taxi Partners</h5>
+        <div class="partner-cards">
+          <a
+            class="partner-card"
+            [href]="'https://m.uber.com/ul/?action=setPickup&dropoff[formatted_address]=' + (invite()?.LocationAddress ?? '')"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="partner-info">
+              <strong>Uber</strong>
+              <span>Destination pre-filled</span>
+            </div>
+            <span class="partner-cta">Open ↗</span>
+          </a>
+
+          <a
+            class="partner-card"
+            [href]="'https://bolt.eu/'"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="partner-info">
+              <strong>Bolt</strong>
+              <span>Fast local pickup</span>
+            </div>
+            <span class="partner-cta">Open ↗</span>
+          </a>
+
+          <a
+            class="partner-card"
+            [href]="'https://uklon.com.ua/'"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="partner-info">
+              <strong>Uklon</strong>
+              <span>Ride & group carpool</span>
+            </div>
+            <span class="partner-cta">Open ↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div modal-actions class="dialog-actions">
+      <button type="button" class="button button--primary dialog-submit-btn" (click)="closeLogisticsModal()">
+        Done
       </button>
     </div>
   </app-modal>

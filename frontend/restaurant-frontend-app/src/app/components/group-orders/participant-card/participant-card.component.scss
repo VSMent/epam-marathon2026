@@ -64,6 +64,24 @@
       background-color: color.$red-100;
     }
   }
+
+  &.reminder-btn {
+    color: color.$blue-500;
+    background-color: color.$blue-100;
+
+    &:hover:not(:disabled) {
+      background-color: color.$blue-400;
+      color: color.$neutral-0;
+    }
+
+    &.sent,
+    &:disabled {
+      color: color.$neutral-600;
+      background-color: color.$neutral-200;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
 }
 
 .chip {
@@ -84,6 +102,19 @@
   &.pending {
     background-color: color.$orange-100;
     color: color.$orange-600;
+  }
+
+  &.alcohol-chip {
+    background-color: color.$new-violet-100;
+    color: color.$new-violet-400;
+    font-weight: 600;
+    gap: 4px;
+  }
+
+  &.empty-warning {
+    background-color: color.$orange-30;
+    color: color.$orange-600;
+    border: 1px dashed color.$orange-400;
   }
 }
 
@@ -158,6 +189,15 @@
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    .alcohol-tag {
+      font-size: 14px;
+      display: inline-block;
+      vertical-align: middle;
+    }
   }
 
   .qty {

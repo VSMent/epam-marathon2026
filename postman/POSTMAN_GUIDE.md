@@ -242,6 +242,62 @@ Allows the Owner to remove an unsubmitted guest session from the group. Immediat
 
 ---
 
+### Request 5: Menu & Salads (HW1)
+
+#### Get All Dishes
+* **Method:** `GET`
+* **URL:** `https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/dishes`
+* **Headers:** none required
+* **Description:** Returns all 12 dishes, including the newly added salads (`dish-spring-salad`, `dish-avocado-bowl`, `dish-strawberry-salad`, `dish-potato-lentil`) with their image URLs.
+
+#### Get Dish by ID
+* **Method:** `GET`
+* **URL:** `https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/dishes/dish-spring-salad`
+
+#### Create Dish with Base64 Image
+* **Method:** `POST`
+* **URL:** `https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/dishes`
+* **Headers:**
+  * `Authorization`: `Bearer <YOUR_ID_TOKEN>`
+  * `Content-Type`: `application/json`
+* **Body (raw JSON):**
+  ```json
+  {
+    "name": "Grilled Halloumi Salad",
+    "description": "Warm Cypriot halloumi with cherry tomatoes and pomegranate glaze.",
+    "dishType": 0,
+    "price": 210,
+    "weight": "320g",
+    "calories": "290",
+    "proteins": "14",
+    "fats": "18",
+    "carbohydrates": "12",
+    "vitamins": "Calcium, A",
+    "state": 0,
+    "locationId": "location-kyiv-center",
+    "imageBase64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD..."
+  }
+  ```
+
+---
+
+### Request 6: Locations & Remote Afar Chalet (HW1 Logistics)
+
+#### Get All Locations
+* **Method:** `GET`
+* **URL:** `https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/locations`
+* **Description:** Returns all 4 Ukrainian restaurant locations:
+  1. `location-kyiv-center` — Khreshchatyk St 15, Kyiv
+  2. `location-lviv-oldtown` — Rynok Square 10, Lviv
+  3. `location-odesa-coast` — Derybasivska St 22, Odesa
+  4. `location-afar-bukovel` — Urochysche Vyshchni 350, Polianytsia (Bukovel), Ivano-Frankivsk (Afar location for HW1 logistics and distance calculations)
+
+#### Get Location by ID
+* **Method:** `GET`
+* **URL:** `https://cs624wcc74.execute-api.us-west-2.amazonaws.com/develop/locations/location-afar-bukovel`
+
+---
+
 ## ⚡ Quick Test Script (PowerShell 1-Liner)
 
 If you prefer testing directly in the terminal before opening Postman, run this PowerShell script:

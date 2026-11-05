@@ -10,8 +10,45 @@
       "id": "location-kyiv-center",
       "name": "Steak & Wine Kyiv Downtown",
       "address": "Khreshchatyk St 15, Kyiv, Ukraine",
-      "phone": "+380441234567",
-      "capacity": 80
+      "description": "Prime dry-aged steaks and authentic Ukrainian hospitality in the heart of Kyiv.",
+      "totalCapacity": 80,
+      "averageOccupancy": "68%",
+      "imageUrl": "assets/img/locations/kyiv-khreshchatyk.jpg",
+      "rating": 4.9,
+      "phone": "+380441234567"
+    },
+    {
+      "id": "location-lviv-oldtown",
+      "name": "Steak & Wine Lviv Rynok",
+      "address": "Rynok Square 10, Lviv, Ukraine",
+      "description": "Historic cobblestone charm with cozy ambient dining, grilled meats, and regional wine cellar.",
+      "totalCapacity": 60,
+      "averageOccupancy": "74%",
+      "imageUrl": "assets/img/locations/lviv-rynok.jpg",
+      "rating": 4.8,
+      "phone": "+380322345678"
+    },
+    {
+      "id": "location-odesa-coast",
+      "name": "Steak & Wine Odesa Coast",
+      "address": "Derybasivska St 22, Odesa, Ukraine",
+      "description": "Mediterranean maritime breeze, fresh grilled specialties, and local Black Sea wines.",
+      "totalCapacity": 75,
+      "averageOccupancy": "60%",
+      "imageUrl": "assets/img/locations/odesa-coast.jpg",
+      "rating": 4.7,
+      "phone": "+380481234567"
+    },
+    {
+      "id": "location-afar-bukovel",
+      "name": "Steak & Wine Mountain Chalet (Carpathian Alps)",
+      "address": "Urochysche Vyshchni 350, Polianytsia (Bukovel), Ivano-Frankivsk Oblast, Ukraine",
+      "description": "A remote alpine dining retreat for winter ski gatherings, mountain banquets, and long-range logistics planning (640 km from Kyiv).",
+      "totalCapacity": 45,
+      "averageOccupancy": "85%",
+      "imageUrl": "assets/img/locations/bukovel-chalet.jpg",
+      "rating": 4.95,
+      "phone": "+380342123456"
     }
   ],
   "Tables": [
@@ -20,6 +57,55 @@
       "locationId": "location-kyiv-center",
       "tableNumber": 10,
       "capacity": 6,
+      "isAvailable": true
+    },
+    {
+      "id": "table-kyiv-12",
+      "locationId": "location-kyiv-center",
+      "tableNumber": 12,
+      "capacity": 4,
+      "isAvailable": true
+    },
+    {
+      "id": "table-lviv-01",
+      "locationId": "location-lviv-oldtown",
+      "tableNumber": 1,
+      "capacity": 4,
+      "isAvailable": true
+    },
+    {
+      "id": "table-lviv-02",
+      "locationId": "location-lviv-oldtown",
+      "tableNumber": 2,
+      "capacity": 6,
+      "isAvailable": true
+    },
+    {
+      "id": "table-odesa-05",
+      "locationId": "location-odesa-coast",
+      "tableNumber": 5,
+      "capacity": 4,
+      "isAvailable": true
+    },
+    {
+      "id": "table-odesa-06",
+      "locationId": "location-odesa-coast",
+      "tableNumber": 6,
+      "capacity": 8,
+      "isAvailable": true
+    },
+    {
+      "id": "table-bukovel-07",
+      "locationId": "location-afar-bukovel",
+      "tableNumber": 7,
+      "capacity": 6,
+      "isAvailable": true
+    },
+    {
+      "id": "table-bukovel-08",
+      "locationId": "location-afar-bukovel",
+      "tableNumber": 8,
+      "capacity": 10,
       "isAvailable": true
     }
   ],
@@ -30,6 +116,27 @@
       "firstName": "Andrii",
       "lastName": "Kovalenko",
       "email": "waiter.andrii@restaurant.com"
+    },
+    {
+      "userId": "waiter-taras-02",
+      "locationId": "location-lviv-oldtown",
+      "firstName": "Taras",
+      "lastName": "Shevchenko",
+      "email": "waiter.taras@restaurant.com"
+    },
+    {
+      "userId": "waiter-oksana-03",
+      "locationId": "location-odesa-coast",
+      "firstName": "Oksana",
+      "lastName": "Bondar",
+      "email": "waiter.oksana@restaurant.com"
+    },
+    {
+      "userId": "waiter-mykhailo-04",
+      "locationId": "location-afar-bukovel",
+      "firstName": "Mykhailo",
+      "lastName": "Hutsul",
+      "email": "waiter.mykhailo@restaurant.com"
     }
   ],
   "Dishes": [
@@ -48,6 +155,7 @@
       "state": 0,
       "locationId": "location-kyiv-center",
       "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/jasmine-tea-cup.jpg",
       "upsellBulkDishId": "dish-tea-pot",
       "upsellDescription": "Combine into 1L Teapot to save 50 UAH"
     },
@@ -65,7 +173,8 @@
       "vitamins": "Antioxidants",
       "state": 0,
       "locationId": "location-kyiv-center",
-      "isAlcoholic": false
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/jasmine-tea-pot.jpg"
     },
     {
       "id": "dish-beer-pint",
@@ -83,6 +192,7 @@
       "locationId": "location-kyiv-center",
       "isAlcoholic": true,
       "alcoholByVolume": "6.2%",
+      "imageUrl": "assets/img/dishes/craft-beer-pint.jpg",
       "upsellBulkDishId": "dish-beer-pitcher",
       "upsellDescription": "Upgrade to 2L Sharing Pitcher"
     },
@@ -101,7 +211,8 @@
       "state": 0,
       "locationId": "location-kyiv-center",
       "isAlcoholic": true,
-      "alcoholByVolume": "6.2%"
+      "alcoholByVolume": "6.2%",
+      "imageUrl": "assets/img/dishes/craft-beer-pitcher.jpg"
     },
     {
       "id": "dish-wine-glass",
@@ -118,7 +229,8 @@
       "state": 0,
       "locationId": "location-kyiv-center",
       "isAlcoholic": true,
-      "alcoholByVolume": "13.5%"
+      "alcoholByVolume": "13.5%",
+      "imageUrl": "assets/img/dishes/cabernet-wine-glass.jpg"
     },
     {
       "id": "dish-ribeye",
@@ -134,7 +246,8 @@
       "vitamins": "B12, Iron, Zinc",
       "state": 0,
       "locationId": "location-kyiv-center",
-      "isAlcoholic": false
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/ribeye-steak.jpg"
     },
     {
       "id": "dish-caesar",
@@ -150,7 +263,8 @@
       "vitamins": "A, C, Calcium",
       "state": 0,
       "locationId": "location-kyiv-center",
-      "isAlcoholic": false
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/caesar-salad.jpg"
     },
     {
       "id": "dish-tomyum",
@@ -166,7 +280,76 @@
       "vitamins": "C, E",
       "state": 0,
       "locationId": "location-kyiv-center",
-      "isAlcoholic": false
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/tom-yum.jpg"
+    },
+    {
+      "id": "dish-spring-salad",
+      "name": "Spring Salad",
+      "description": "Crisp seasonal spring greens, radishes, baby cucumbers, and cold-pressed sunflower dressing.",
+      "dishType": 0,
+      "price": 220,
+      "weight": "430g",
+      "calories": "180",
+      "proteins": "4",
+      "fats": "12",
+      "carbohydrates": "14",
+      "vitamins": "A, C, K",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/spring-salad.jpg"
+    },
+    {
+      "id": "dish-avocado-bowl",
+      "name": "Avocado Pine Nut Bowl",
+      "description": "Creamy Hass avocado slices, roasted pine nuts, quinoa, baby spinach, and lemon olive oil dressing.",
+      "dishType": 0,
+      "price": 260,
+      "weight": "380g",
+      "calories": "340",
+      "proteins": "7",
+      "fats": "24",
+      "carbohydrates": "22",
+      "vitamins": "E, Folate, Potassium",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/avocado-pine-nut-bowl.jpg"
+    },
+    {
+      "id": "dish-strawberry-salad",
+      "name": "Fresh Strawberry Mint Salad",
+      "description": "Sweet garden strawberries, fresh mint, crumbled goat feta cheese, wild arugula, and balsamic reduction.",
+      "dishType": 0,
+      "price": 195,
+      "weight": "350g",
+      "calories": "210",
+      "proteins": "6",
+      "fats": "10",
+      "carbohydrates": "24",
+      "vitamins": "C, Antioxidants",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/fresh-strawberry-mint-salad.jpg"
+    },
+    {
+      "id": "dish-potato-lentil",
+      "name": "Roasted Sweet Potato & Lentil Salad",
+      "description": "Warm herb-roasted sweet potato cubes, French Puy lentils, red onion, parsley, and tahini drizzle.",
+      "dishType": 0,
+      "price": 230,
+      "weight": "400g",
+      "calories": "360",
+      "proteins": "12",
+      "fats": "9",
+      "carbohydrates": "58",
+      "vitamins": "A, B6, Iron, Fiber",
+      "state": 0,
+      "locationId": "location-kyiv-center",
+      "isAlcoholic": false,
+      "imageUrl": "assets/img/dishes/roasted-sweet-potato-and-lentil-salad.jpg"
     }
   ],
   "Reservations": [
@@ -200,8 +383,8 @@
       "isSubmitted": true,
       "originAddress": "Obolonskyi Ave 14, Kyiv",
       "dishes": [
-        { "dishId": "dish-ribeye", "quantity": 1 },
-        { "dishId": "dish-beer-pint", "quantity": 1 }
+        { "dishId": "dish-ribeye", "quantity": 1, "state": 0 },
+        { "dishId": "dish-beer-pint", "quantity": 1, "state": 0 }
       ]
     },
     {
@@ -212,8 +395,8 @@
       "isSubmitted": true,
       "originAddress": "Sahaidachnoho St 25, Podil, Kyiv",
       "dishes": [
-        { "dishId": "dish-caesar", "quantity": 1 },
-        { "dishId": "dish-tea-cup", "quantity": 2 }
+        { "dishId": "dish-spring-salad", "quantity": 1, "state": 0 },
+        { "dishId": "dish-tea-cup", "quantity": 2, "state": 0 }
       ]
     },
     {
@@ -224,8 +407,8 @@
       "isSubmitted": true,
       "originAddress": "Mykoly Bazhana Ave 8, Pozniaky, Kyiv",
       "dishes": [
-        { "dishId": "dish-tea-cup", "quantity": 1 },
-        { "dishId": "dish-wine-glass", "quantity": 1 }
+        { "dishId": "dish-avocado-bowl", "quantity": 1, "state": 0 },
+        { "dishId": "dish-wine-glass", "quantity": 1, "state": 0 }
       ]
     },
     {
@@ -236,8 +419,8 @@
       "isSubmitted": false,
       "originAddress": "Instytutska St 18, Pechersk, Kyiv",
       "dishes": [
-        { "dishId": "dish-tomyum", "quantity": 1 },
-        { "dishId": "dish-beer-pint", "quantity": 1 }
+        { "dishId": "dish-tomyum", "quantity": 1, "state": 0 },
+        { "dishId": "dish-beer-pint", "quantity": 1, "state": 0 }
       ]
     }
   ],
@@ -272,4 +455,3 @@
     }
   ]
 }
-

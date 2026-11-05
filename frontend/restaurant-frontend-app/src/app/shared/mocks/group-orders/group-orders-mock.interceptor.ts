@@ -60,6 +60,11 @@ export const groupOrdersMockInterceptor: HttpInterceptorFn = (req, next) => {
     const guestSessionId = decodeURIComponent(path.slice(path.lastIndexOf('/') + 1));
     return respond(() => store.remove(guestSessionId));
   }
+  if (req.method === 'POST' && path.includes(`${groupBase}/`) && path.endsWith('/remind')) {
+    const parts = path.split('/');
+    const guestSessionId = decodeURIComponent(parts[parts.length - 2]);
+    return respond(() => store.sendReminder(guestSessionId));
+  }
 
   // Демо-логін (?demo): справжній API демо-токен не прийме, тож кошик у шапці показуємо порожнім.
   if (req.method === 'GET' && path.endsWith('/orders') && isDemoAuthorization(req.headers.get('Authorization'))) {

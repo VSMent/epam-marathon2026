@@ -1,33 +1,55 @@
-<article class="card">
+<article class="card" [class.has-alcohol]="hasAlcohol()">
   <header class="card-header">
     <div class="header-left">
       <h2 class="title">{{ title() }}</h2>
+      @if (hasAlcohol()) {
+      <span class="chip alcohol-chip" title="Includes alcoholic beverages">
+        <span aria-hidden="true">🍷</span> Alcohol
+      </span>
+      }
       @if (participant().isSubmitted) {
       <span class="chip submitted">Submitted</span>
       } @else {
       <span class="chip pending">Still choosing</span>
+      }
+      @if (hasEmptyCart() && participant().type === 'Guest') {
+      <span class="chip empty-warning">No dishes yet</span>
       }
     </div>
 
     <div class="header-actions">
       @if (participant().type === 'Owner') {
       <button type="button" class="action-btn edit-btn">Edit my Pre-Order</button>
-      } @else if (canRemove()) {
-      <button
-        type="button"
-        class="action-btn remove-btn"
-        [attr.aria-label]="'Remove ' + participant().name"
-        (click)="removeClick.emit(participant())"
-      >
-        Remove Guest
-      </button>
+      } @else {
+        @if (hasEmptyCart() && !participant().isSubmitted) {
+        <button
+          type="button"
+          class="action-btn reminder-btn"
+          [class.sent]="participant().reminderSent"
+          [disabled]="participant().reminderSent"
+          [attr.aria-label]="'Send reminder to ' + participant().name"
+          (click)="reminderClick.emit(participant())"
+        >
+          {{ participant().reminderSent ? '✓ Reminder Sent' : '🔔 Send Reminder' }}
+        </button>
+        }
+        @if (canRemove()) {
+        <button
+          type="button"
+          class="action-btn remove-btn"
+          [attr.aria-label]="'Remove ' + participant().name"
+          (click)="removeClick.emit(participant())"
+        >
+          Remove Guest
+        </button>
+        }
       }
     </div>
   </header>
 
-  @if (participant().items.length) {
+  @if (displayedItems().length) {
   <ul class="items">
-    @for (item of participant().items; track item.dish.id) {
+    @for (item of displayedItems(); track item.dish.id) {
     <li class="item">
       <button type="button" class="delete-item-btn" aria-label="Delete item">
         <img src="assets/svg/trash.svg" alt="" aria-hidden="true" width="16" height="16" />
@@ -39,15 +61,24 @@
       <span class="avatar initial" aria-hidden="true">{{ item.dish.name.charAt(0) }}</span>
       }
 
-      <p class="name">{{ item.dish.name }}</p>
+      <div class="dish-details">
+        <p class="name">
+          {{ item.dish.name }}
+          @if (item.dish.isAlcohol) {
+          <span class="alcohol-tag" title="Alcoholic drink" aria-label="Alcoholic drink">🍷</span>
+          }
+        </p>
+      </div>
       <p class="qty">× {{ item.quantity }}</p>
       <p class="price">{{ item.dish.price * item.quantity | currency }}</p>
     </li>
     }
   </ul>
+  } @else if (showAlcoholOnly() && participant().items.length > 0) {
+  <p class="empty">No alcoholic drinks in this pre-order</p>
   } @else {
   <p class="empty">No dishes yet</p>
   }
 
-  <p class="subtotal"><span>Subtotal</span><span>{{ participant().total | currency }}</span></p>
+  <p class="subtotal"><span>Subtotal</span><span>{{ subtotal() | currency }}</span></p>
 </article>

@@ -205,6 +205,107 @@
           }
         }
       ]
+    },
+    {
+      "name": "4. Menu & Salads (HW1)",
+      "item": [
+        {
+          "name": "Get All Dishes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dishes",
+              "host": ["{{baseUrl}}"],
+              "path": ["dishes"]
+            }
+          }
+        },
+        {
+          "name": "Get Dish By ID (Spring Salad)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dishes/dish-spring-salad",
+              "host": ["{{baseUrl}}"],
+              "path": ["dishes", "dish-spring-salad"]
+            }
+          }
+        },
+        {
+          "name": "Create Dish with Base64 Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grilled Halloumi Salad\",\n  \"description\": \"Warm Cypriot halloumi with cherry tomatoes and pomegranate glaze.\",\n  \"dishType\": 0,\n  \"price\": 210,\n  \"weight\": \"320g\",\n  \"calories\": \"290\",\n  \"proteins\": \"14\",\n  \"fats\": \"18\",\n  \"carbohydrates\": \"12\",\n  \"vitamins\": \"Calcium, A\",\n  \"state\": 0,\n  \"locationId\": \"location-kyiv-center\",\n  \"imageBase64\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/dishes",
+              "host": ["{{baseUrl}}"],
+              "path": ["dishes"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Locations & Logistics (Ukraine & Afar)",
+      "item": [
+        {
+          "name": "Get All Locations (Kyiv, Lviv, Odesa, Bukovel)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations"]
+            }
+          }
+        },
+        {
+          "name": "Get Location By ID (Bukovel Remote Chalet)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/location-afar-bukovel",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", "location-afar-bukovel"]
+            }
+          }
+        },
+        {
+          "name": "Get Location Tables (Kyiv Center)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/locations/location-kyiv-center/tables/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["locations", "location-kyiv-center", "tables", "all"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -128,6 +128,183 @@ main {
   }
 }
 
+.alcohol-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 8px 12px;
+  background-color: color.$new-violet-100;
+  border-radius: 12px;
+
+  .filter-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid color.$new-violet-400;
+    background-color: color.$neutral-0;
+    color: color.$new-violet-400;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 9px;
+      background-color: color.$new-violet-400;
+      color: color.$neutral-0;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    &.active {
+      background-color: color.$new-violet-400;
+      color: color.$neutral-0;
+
+      .count-badge {
+        background-color: color.$neutral-0;
+        color: color.$new-violet-400;
+      }
+    }
+  }
+
+  .plan-logistics-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: color.$orange-400;
+    color: color.$neutral-900;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: color.$orange-600;
+      color: color.$neutral-0;
+    }
+  }
+}
+
+.bulk-optimization-card {
+  margin: 12px 0 16px;
+  padding: 16px;
+  background-color: color.$green-100;
+  border: 1px solid color.$green-300;
+  border-radius: 12px;
+
+  .bulk-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    .bulk-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .bulk-title-group {
+      h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: color.$green-800;
+      }
+
+      p {
+        margin: 2px 0 0;
+        font-size: 13px;
+        color: color.$neutral-700;
+      }
+    }
+  }
+
+  .bulk-suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .bulk-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 14px;
+    background-color: color.$neutral-0;
+    border-radius: 8px;
+    border: 1px solid color.$green-150;
+
+    .bulk-item-info {
+      flex: 1;
+      min-width: 240px;
+
+      strong {
+        font-size: 14px;
+        color: color.$neutral-900;
+        display: block;
+      }
+
+      p {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: color.$neutral-600;
+      }
+
+      .savings-tag {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        background-color: color.$green-100;
+        color: color.$green-800;
+        font-weight: 600;
+        font-size: 12px;
+      }
+    }
+
+    .bulk-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .apply-bulk-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        min-height: 32px;
+      }
+
+      .revert-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+        color: color.$neutral-600;
+        min-height: 32px;
+      }
+
+      .applied-badge {
+        font-size: 13px;
+        font-weight: 600;
+        color: color.$green-600;
+      }
+    }
+  }
+}
+
 .warning-banner {
   background-color: color.$bg-yellow;
   border: 1px solid color.$orange-100;
@@ -186,6 +363,29 @@ main {
 footer {
   margin-top: 24px;
 
+  .cost-breakdown {
+    background-color: color.$neutral-0;
+    border: 1px solid color.$neutral-200;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: color.$neutral-600;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      margin-top: 12px;
+      margin-bottom: 0;
+      padding-top: 12px;
+      border-top: 1px solid color.$neutral-200;
+    }
+  }
+
   h2 {
     display: flex;
     justify-content: space-between;
@@ -198,6 +398,86 @@ footer {
 
   .button {
     width: 100%;
+  }
+}
+
+.logistics-dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .destination-preview {
+    background-color: color.$bg-green;
+    padding: 12px 16px;
+    border-radius: 8px;
+
+    .dest-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: color.$neutral-600;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .dest-address {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      color: color.$neutral-900;
+    }
+  }
+
+  .rideshare-partners {
+    h5 {
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: color.$neutral-900;
+    }
+
+    .partner-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .partner-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border: 1px solid color.$neutral-200;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s ease;
+
+      &:hover {
+        border-color: color.$green-400;
+        background-color: color.$green-100;
+      }
+
+      .partner-info {
+        strong {
+          display: block;
+          font-size: 14px;
+          color: color.$neutral-900;
+        }
+
+        span {
+          font-size: 12px;
+          color: color.$neutral-600;
+        }
+      }
+
+      .partner-cta {
+        font-size: 13px;
+        font-weight: 600;
+        color: color.$green-600;
+      }
+    }
   }
 }
 

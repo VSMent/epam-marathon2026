@@ -30,18 +30,28 @@ export class MockHttpError {
   constructor(readonly status: number, readonly message: string) {}
 }
 
-const dish = (id: string, name: string, price: number, image: string, weight: string) => ({
-  id, name, price, weight, imageUrl: `assets/img/dishes/${image}.jpg`,
+const dish = (id: string, name: string, price: number, image: string, weight: string, isAlcohol = false) => ({
+  id, name, price, weight, imageUrl: `assets/img/dishes/${image}.jpg`, isAlcohol,
 });
-const SPRING = dish('dish-spring-salad', 'Spring Salad', 12, 'spring-salad', '430 g');
+const SPRING = {
+  ...dish('dish-spring-salad', 'Spring Salad', 12, 'spring-salad', '430 g'),
+  bulkEquivalent: {
+    bulkDishId: 'dish-spring-salad-family',
+    bulkName: 'Family Sharing Spring Salad Bowl (Serves 3)',
+    bulkPrice: 28,
+    minQuantity: 3,
+    servingNote: 'Combine 3 portions into 1 Large Sharing Platter',
+  },
+};
 const AVOCADO = dish('dish-avocado-bowl', 'Avocado Pine Nut Bowl', 14.5, 'avocado-pine-nut-bowl', '380 g');
+const WHITE_WINE = dish('dish-wine-glass', 'House White Wine (Glass)', 8, 'cabernet-wine-glass', '150 ml', true);
 const STRAWBERRY = dish('dish-strawberry-salad', 'Fresh Strawberry Mint Salad', 11, 'fresh-strawberry-mint-salad', '350 g');
 const POTATO = dish('dish-potato-lentil', 'Roasted Sweet Potato & Lentil Salad', 13, 'roasted-sweet-potato-and-lentil-salad', '400 g');
 
 function initialParticipants(): Participant[] {
   return [
     { id: DEMO_OWNER_SESSION_ID, type: 'Owner', name: 'Yevhenii', isSubmitted: true, total: 0,
-      items: [{ dish: SPRING, quantity: 1 }, { dish: AVOCADO, quantity: 1 }] },
+      items: [{ dish: SPRING, quantity: 1 }, { dish: AVOCADO, quantity: 1 }, { dish: WHITE_WINE, quantity: 1 }] },
     { id: 'gs-kateryna', type: 'Guest', name: 'Kateryna', isSubmitted: true, total: 0,
       items: [{ dish: SPRING, quantity: 2 }] },
     { id: 'gs-mariia', type: 'Guest', name: 'Mariia', isSubmitted: false, total: 0,
@@ -96,5 +106,12 @@ export class GroupOrdersMockStore {
     if (participant.type === 'Owner') throw new MockHttpError(400, 'Owner session cannot be removed.');
     this.participants = this.participants.filter((p) => p.id !== guestSessionId);
     return this.snapshot();
+  }
+
+  sendReminder(guestSessionId: string): { success: boolean; message: string } {
+    const participant = this.participants.find((p) => p.id === guestSessionId);
+    if (!participant) throw new MockHttpError(404, `Guest session with id ${guestSessionId} not found.`);
+    participant.reminderSent = true;
+    return { success: true, message: `Reminder sent to ${participant.name}` };
   }
 }

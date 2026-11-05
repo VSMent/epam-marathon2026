@@ -95,19 +95,20 @@ User story: посилання
 
 
 
-## 🟩FROM HOMEWORK 1
-US1: As a booking organizer, I want to see identical items aggregated across all guests' pre-orders on a single summary screen, So that I can replace individual portions with larger sharing options or bulk sizes to save money.
-    AC1: Given multiple guests have selected identical individual items (e.g. three 300 ml cups of tea), When the organizer views the group order summary screen, Then the system displays an upsell/bulk suggestion (e.g. "Combine into 1L teapot") along with the potential cost difference.
-    AC2: Given a bulk suggestion is shown, When the organizer confirms the replacement, Then the summary updates the consolidated items and recalculates the total order price automatically.
-    AC3:Given guests have selected distinct items or items without bulk equivalents, When the organizer opens the summary screen, Then no optimization hints are shown, and items remain grouped as they were.
+## ✅📌 Домашнє завдання #1 (US1, US2, US3)
 
-US2: As a booking organizer, I want to filter and highlight alcoholic beverages within the combined group order, So that I can plan transportation logistics (booking taxis or assigning designated drivers) ahead of time.
-    AC1: Given one or more guests have added alcoholic drinks to their pre-order, When the organizer views the group pre-order screen, Then an alcohol indicator icon is displayed next to each relevant guest and item.
-    AC2: Given the group pre-order contains mixed items (alcoholic items included), When the organizer toggles the "Show Alcohol Only" filter, Then the screen filters the view to show only alcoholic drinks grouped by guest.
-    AC3: Given the group order includes alcohol items, When the organizer clicks the "Plan Logistics" prompt on the summary screen, Then the system presents taxi/ride-sharing partner options with destination pre-filled as the restaurant address.
+✅ US1: As a booking organizer, I want to see identical items aggregated across all guests' pre-orders on a single summary screen, So that I can replace individual portions with larger sharing options or bulk sizes to save money.
+    ✅ AC1: Given multiple guests have selected identical individual items (e.g. three 300 ml cups of tea), When the organizer views the group order summary screen, Then the system displays an upsell/bulk suggestion (e.g. "Combine into 1L teapot") along with the potential cost difference.
+    ✅ AC2: Given a bulk suggestion is shown, When the organizer confirms the replacement, Then the summary updates the consolidated items and recalculates the total order price automatically.
+    ✅ AC3: Given guests have selected distinct items or items without bulk equivalents, When the organizer opens the summary screen, Then no optimization hints are shown, and items remain grouped as they were.
 
-US3: As a booking organizer, I want to view a consolidated summary of all guests' pre-orders with per-person breakdowns and the total bill, So that I can verify that everyone has placed their order and check the estimated budget before confirming with the restaurant.
-    AC1: Given guests have submitted or drafted their selections, When the organizer opens the group order dashboard, Then each guest's name is listed alongside their selected dishes, personal subtotals.
-    AC2: Given all invited guests have submitted their pre-orders, When the organizer reviews the summary panel, Then the screen displays the total estimated cost, including taxes and service charges. 
-    AC3: Given at least one invited guest has not chosen any dishes yet, When the organizer views the list, Then an empty status warning is visible next to their name with an option to send a reminder notification.
-    AC4: Given an invited guest has not chosen any dishes yet and displays an empty status warning, When the organizer clicks the "Send Reminder" button next to that guest, Then the system dispatches a notification to the guest and displays a confirmation toast message, updating the button to sent.
+✅ US2: As a booking organizer, I want to filter and highlight alcoholic beverages within the combined group order, So that I can plan transportation logistics (booking taxis or assigning designated drivers) ahead of time.
+    ✅ AC1: Given one or more guests have added alcoholic drinks to their pre-order, When the organizer views the group pre-order screen, Then an alcohol indicator icon is displayed next to each relevant guest and item.
+    ✅ AC2: Given the group pre-order contains mixed items (alcoholic items included), When the organizer toggles the "Show Alcohol Only" filter, Then the screen filters the view to show only alcoholic drinks grouped by guest.
+    ✅ AC3: Given the group order includes alcohol items, When the organizer clicks the "Plan Logistics" prompt on the summary screen, Then the system presents taxi/ride-sharing partner options with destination pre-filled as the restaurant address.
+
+✅ US3: As a booking organizer, I want to view a consolidated summary of all guests' pre-orders with per-person breakdowns and the total bill, So that I can verify that everyone has placed their order and check the estimated budget before confirming with the restaurant.
+    ✅ AC1: Given guests have submitted or drafted their selections, When the organizer opens the group order dashboard, Then each guest's name is listed alongside their selected dishes, personal subtotals.
+    ✅ AC2: Given all invited guests have submitted their pre-orders, When the organizer reviews the summary panel, Then the screen displays the total estimated cost, including taxes and service charges. 
+    ✅ AC3: Given at least one invited guest has not chosen any dishes yet, When the organizer views the list, Then an empty status warning is visible next to their name with an option to send a reminder notification.
+    ✅ AC4: Given an invited guest has not chosen any dishes yet and displays an empty status warning, When the organizer clicks the "Send Reminder" button next to that guest, Then the system dispatches a notification to the guest and displays a confirmation toast message, updating the button to sent.
