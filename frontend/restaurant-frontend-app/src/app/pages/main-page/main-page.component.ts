@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, computed, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DishListResponse } from '@app/models/dishes/dish-list-response.model';
@@ -34,6 +34,9 @@ import { LoginModalComponent } from '@app/auth/components/login/login-modal/logi
 export class MainPageComponent implements OnInit {
   dishes: DishListResponse[] = [];
   locations: LocationResponse[] = [];
+
+  readonly isLoadingDishes = signal(true);
+  readonly isLoadingLocations = signal(true);
 
   showFeedbackModal = false;
   selectedReservationCustomer!: ReservationCustomer;
@@ -82,26 +85,40 @@ export class MainPageComponent implements OnInit {
   }
 
   loadPopularDishes(): void {
-    this.dishesService.getPopularDishes().subscribe((data) => {
-      this.dishes = data.slice(0, 4).map((dish) => ({
-        ...dish,
-        imageUrl: dish.imageUrl || 'assets/img/dish.png',
-        name: dish.name || 'Unknown Dish',
-        price: dish.price || 0,
-        weight: dish.weight || 'N/A',
-      }));
+    this.isLoadingDishes.set(true);
+    this.dishesService.getPopularDishes().subscribe({
+      next: (data) => {
+        this.dishes = data.slice(0, 4).map((dish) => ({
+          ...dish,
+          imageUrl: dish.imageUrl || 'assets/img/dish.png',
+          name: dish.name || 'Unknown Dish',
+          price: dish.price || 0,
+          weight: dish.weight || 'N/A',
+        }));
+        this.isLoadingDishes.set(false);
+      },
+      error: () => {
+        this.isLoadingDishes.set(false);
+      },
     });
   }
 
   loadLocations(): void {
-    this.locationsService.getLocations().subscribe((data) => {
-      this.locations = data.slice(0, 3).map((location) => ({
-        ...location,
-        imageUrl: location.imageUrl || 'assets/img/locations/baratashvili-street-14.jpg',
-        address: location.address || 'Unknown Address',
-        totalCapacity: location.totalCapacity || 0,
-        averageOccupancy: location.averageOccupancy || 'N/A',
-      }));
+    this.isLoadingLocations.set(true);
+    this.locationsService.getLocations().subscribe({
+      next: (data) => {
+        this.locations = data.slice(0, 4).map((location) => ({
+          ...location,
+          imageUrl: location.imageUrl || 'assets/img/locations/kyiv-khreshchatyk.jpg',
+          address: location.address || 'Unknown Address',
+          totalCapacity: location.totalCapacity || 0,
+          averageOccupancy: location.averageOccupancy || 'N/A',
+        }));
+        this.isLoadingLocations.set(false);
+      },
+      error: () => {
+        this.isLoadingLocations.set(false);
+      },
     });
   }
 

@@ -22,31 +22,45 @@
   <div class="popular-dishes-section">
     <h2 class="section-heading">Most Popular Dishes</h2>
 
-    <div class="dish-cards">
-      @for (dish of dishes; track dish) {
-        <a routerLink="/dish/{{ dish.id }}" routerLinkActive="router-link-active" class="dish-card">
-          <img [src]="dish.imageUrl" alt="{{ dish.name }}" class="dish-image" />
-          <div class="dish-info">
-            <div class="dish-name">{{ dish.name }}</div>
-            <div class="dish-meta">
-              <span class="dish-price">{{ dish.price | currency: '$' }}</span>
-              <span class="dish-weight">{{ dish.weight }}</span>
+    @if (isLoadingDishes()) {
+      <div class="section-loading-state" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Loading popular dishes…</p>
+      </div>
+    } @else {
+      <div class="dish-cards">
+        @for (dish of dishes; track dish.id) {
+          <a routerLink="/dish/{{ dish.id }}" routerLinkActive="router-link-active" class="dish-card">
+            <img [src]="dish.imageUrl" alt="{{ dish.name }}" class="dish-image" />
+            <div class="dish-info">
+              <div class="dish-name">{{ dish.name }}</div>
+              <div class="dish-meta">
+                <span class="dish-price">{{ dish.price | currency: '$' }}</span>
+                <span class="dish-weight">{{ dish.weight }}</span>
+              </div>
             </div>
-          </div>
-        </a>
-      }
-    </div>
+          </a>
+        }
+      </div>
+    }
   </div>
 
   <!-- Locations -->
   <div class="locations-section">
     <h2 class="section-heading">Locations</h2>
 
-    <div class="location-cards">
-      @for (location of locations; track location) {
-        <app-location-card [location]="location" maxWidth="488px"></app-location-card>
-      }
-    </div>
+    @if (isLoadingLocations()) {
+      <div class="section-loading-state" role="status" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        <p>Loading locations…</p>
+      </div>
+    } @else {
+      <div class="location-cards">
+        @for (location of locations; track location.id) {
+          <app-location-card [location]="location" maxWidth="488px"></app-location-card>
+        }
+      </div>
+    }
   </div>
 </section>
 <!-- </div> -->
