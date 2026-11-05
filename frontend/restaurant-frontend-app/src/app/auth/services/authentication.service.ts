@@ -137,16 +137,22 @@ export class AuthenticationService {
     const url = this.baseUrl + '/me';
     this.http.get<UserModel>(url).subscribe(
       (user) => {
-        this.user$$.next(user);
         localStorage.setItem('user', JSON.stringify(user));
+        this.user$$.next(user);
       },
       (error) => {
         console.error('Failed to load user data:', error);
+        localStorage.removeItem('user');
         this.user$$.next(null);
       }
     );
   }
   getUser(): UserModel | null {
+    // user$$ is not yet initialised when called from its own field initialiser
+    const currentUser = this.user$$?.value;
+    if (currentUser) {
+      return currentUser;
+    }
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
   }

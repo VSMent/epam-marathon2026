@@ -9,29 +9,19 @@ export class AdminGuard implements CanActivate {
   private authService = inject(AuthenticationService);
   private router = inject(Router);
 
-  // canActivate(): boolean {
-  //   const user = this.authService.getUser();
-  //   console.log('user.role', user?.role);
-
-  //   if (user && user.role === 'Admin') {
-  //     return true;
-  //   }
-
-  //   this.router.navigate(['/reports']);
-  //   return false;
-  // }
   canActivate(): boolean {
     const user = this.authService.getUser();
 
     if (!user || !user.role) {
       console.warn('User not authenticated or missing role');
+      this.router.navigate(['/login']);
       return false;
     }
 
-    if (user && user.role === 'Admin') {
+    if (user.role === 'Admin') {
       return true;
     }
-    this.router.navigate(['/reports']);
-    return user.role === 'Admin';
+    this.router.navigate(['/main']);
+    return false;
   }
 }
